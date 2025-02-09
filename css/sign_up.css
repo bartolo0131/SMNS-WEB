@@ -1,0 +1,150 @@
+
+  /* Estilos del encabezado */
+  header {
+    background-color: #7a7c7a; /* Color de fondo del encabezado */
+    color: #c7b8b8; /* Color del texto */
+    padding: 20px 0; /* Espaciado superior e inferior */
+    text-align: center; /* Centra el texto dentro del encabezado */
+  }
+  
+  h1 {
+    font-size: 4.5rem; /* Tamaño del texto del título */
+    margin: 0; /* Elimina el margen por defecto */
+  }
+
+  
+  
+  /*ajusta el titulo para que quede centrado*/
+  header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  nav ul {
+    list-style: none; /* Elimina los puntos de la lista */
+    padding: 0; /* Elimina el relleno */
+    margin: 0; /* Elimina el margen */
+    display: flex; /* Usa flexbox para la alineación */
+    justify-content: center; /* Centra los elementos de la lista */
+  }
+  
+  /*ajuste el espaciadso del menu*/
+  nav ul li {
+    margin: 0 20px;
+  }
+  
+  /* Estilos para los navegadores */
+  nav ul li a {
+    color: rgb(247, 241, 241);
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.5rem; /* Tamaño del texto de los enlaces */
+  }
+  
+  
+
+  
+  /* Estilos para el pie de página */
+  footer {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: rgb(126, 118, 118);
+    text-align: center;
+    padding: 10px 20px;
+    margin-top: auto;  
+  }
+  
+
+  
+  h1 {
+    font-size: 4.5rem; /* Tamaño del texto del título */
+    margin: 0; /* Elimina el margen por defecto */
+  }
+
+  h3 {
+    font-size: 4.5rem; /* Tamaño del texto del título */
+    margin: 0; /* Elimina el margen por defecto */
+    font-size: 50px;
+    text-align: center;
+    color:rgb(59, 57, 63)
+  }
+
+  #main-content{
+    width: 80%;
+    max-width: 900px;
+    margin: 0 auto;
+    background-color: #dde1f3;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block; 
+    margin-bottom: 15px;
+    font-family: arial black;
+}
+
+/*cajones de input*/
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="password"],
+input[type="date"],
+select {
+    width: calc(100% - 10px); /* Ancho completo menos padding y border */
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 2px solid #ccc;
+    border-radius: 15px;
+    box-sizing: border-box;
+}
+
+
+.mb-4 {
+    margin-top: 10px;
+}
+
+  
+button {
+    background-color: #5e5f61; 
+    color: #dddceb;
+    padding: 20px 30px;
+    border: black;
+    border-radius: 10px;
+    cursor: pointer;
+   
+}
+
+/*estilo login*/
+form button {
+    background-color: #4a4a4b;
+    color: #f8f2f2;
+    border: none;
+    padding: 20px 5%;
+    border-radius: 15px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column; /* Alinea los elementos verticalmente */
+    align-items: center; /* Centra horizontalmente los elementos */
+    width: 400px; /* Ancho opcional del formulario */
+    margin: 0 auto; /* Centra la caja de login*/
+    font-size: 20px;
+    font-family: arial black;
+  }
+  
+  
+
+  .row {
+    margin-bottom: 35px; /* Espacio entre campos */
+  }
+  
+  
+  
+  
+
+  
+
+  
+
+  
