@@ -1,0 +1,85 @@
+body {
+    font-family: sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; /* Asegura que el cuerpo ocupe al menos el 100% de la altura de la pantalla */
+  }
+  
+  .container {
+    width: 80%;
+    margin: 20px auto;
+    flex: 1; /* Permite que el contenedor principal se expanda para llenar el espacio disponible */
+  }
+  
+  nav {
+    background-color: #333;
+    color: #fff;
+    padding: 10px;
+  }
+  
+  nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-between; /* Distribuye los elementos del menú uniformemente */
+  }
+  
+  nav li {
+    margin: 0 10px;
+  }
+  
+  nav a {
+    color: #fff;
+    text-decoration: none;
+  }
+  
+  .login-contact-container {
+    display: flex;
+    justify-content: flex-end; /* Alinea los elementos a la derecha */
+    margin-top: 20px; /* Espacio entre el menú y esta sección */
+  }
+  
+  .login-form,
+  .contact-form {
+    background-color: #f0f0f0;
+    padding: 20px;
+    border-radius: 5px;
+    margin-left: 20px; /* Espacio entre el formulario de login y el de contacto */
+  }
+  
+  .login-form label,
+  .contact-form label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  .login-form input,
+  .contact-form input,
+  .contact-form textarea {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+  
+  .login-form button,
+  .contact-form button {
+    background-color: #333;
+    color: #fff;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+  }
+  
+  footer {
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    padding: 10px;
+    margin-top: 20px; /* Espacio entre el contenido principal y el pie de página */
+  }
