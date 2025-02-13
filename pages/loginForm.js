@@ -1,4 +1,4 @@
-document.getElementById('login-form').addEventListener('submit', function(event) {
+document.getElementById('loginForm').addEventListener('submit', function(event) {
     event.preventDefault(); // Evita que la página se recargue
 
     const email = document.getElementById('email').value;

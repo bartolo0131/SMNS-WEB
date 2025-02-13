@@ -10,7 +10,7 @@ app.use(bodyParser.json());
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
 
-    const query = 'SELECT * FROM user WHERE email = ? AND password = ?';
+    const query = 'SELECT * FROM users WHERE email = ? AND password = ?';
     connection.query(query, [email, password], (err, results) => {
         if (err) {
             return res.status(500).json({ message: 'Error en el servidor' });
