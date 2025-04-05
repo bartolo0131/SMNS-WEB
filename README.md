@@ -12,8 +12,8 @@ Dentro del archivo db.js Agregar los datos de la conexión a la base de datos qu
   const connection = mysql.createConnection({
     host: process.env.DB_HOST || 'localhost',
     user: process.env.DB_USER || 'user',
-    password: process.env.DB_PASSWORD || 'password',
-    database: process.env.DB_NAME || 'dataBase_name'
+    password: process.env.DB_PASSWORD || '',
+    database: process.env.DB_NAME || 'smns'
 });
 ```
 
