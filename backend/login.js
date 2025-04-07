@@ -8,21 +8,22 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.post('/login', (req, res) => {
-    const { email, password } = req.body;
-    console.log('📥 Intento de login con:', email, password);
+    const { login, contraseña } = req.body;
+
+    if (!login || !contraseña) {
+        return res.status(400).json({ message: 'Campos incompletos' });
+    }
 
     const query = 'SELECT * FROM usuarios WHERE login = ? AND contraseña = ?';
-    connection.query(query, [email, password], (err, results) => {
+    connection.query(query, [login, contraseña], (err, results) => {
         if (err) {
-            console.error('❌ Error en consulta SQL:', err);
+            console.error('❌ Error en consulta:', err);
             return res.status(500).json({ message: 'Error en el servidor' });
         }
 
         if (results.length > 0) {
-            console.log('✅ Usuario autenticado');
             return res.status(200).json({ message: 'Login exitoso' });
         } else {
-            console.log('⚠️ Credenciales incorrectas');
             return res.status(401).json({ message: 'Credenciales incorrectas' });
         }
     });
