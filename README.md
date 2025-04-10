@@ -17,7 +17,7 @@ Dentro del archivo db.js Agregar los datos de la conexión a la base de datos qu
 });
 ```
 
-Dentro de la carpeta backend ingregas a la terminal y corres el servicio de express 
+Dentro de la carpeta backend ingregas a la terminal y corres el servicio de express .
 
 
   
