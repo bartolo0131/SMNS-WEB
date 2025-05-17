@@ -5,6 +5,7 @@ const path = require('path');
 const app = express();
 
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'pages'))); // Servir archivos estáticos
 
 // Conexión a MySQL
 const db = mysql.createConnection({
@@ -29,7 +30,7 @@ app.post('/register', async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 5);
 
-  const sql = 'INSERT INTO suarios (login, Contraseña, id_cliente, id_rol) VALUES (?, ?, ?, ?)';
+  const sql = 'INSERT INTO usuarios (login, Contraseña, id_cliente, id_rol) VALUES (?, ?, ?, ?)';
   db.query(sql, [login, hashedPassword, id_cliente, id_rol], (err, result) => {
     if (err) {
       if (err.code === 'ER_DUP_ENTRY') {
@@ -43,10 +44,9 @@ app.post('/register', async (req, res) => {
 
 // Ruta principal que sirve el formulario
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'pages', 'registro.html'));
+  res.sendFile(path.join(__dirname, 'pages', 'registro.html'));
 });
 
 app.listen(3000, () => {
   console.log('Servidor corriendo en http://localhost:3000');
 });
-

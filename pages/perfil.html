@@ -4,94 +4,22 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Perfil de Usuario</title>
-  <link rel="stylesheet" href="styles/login.css" />
-  <style>
-    body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f2f2f2;
-      margin: 0;
-      padding: 0;
-    }
+  <link rel="stylesheet" href="styles/perfil.css" />
 
-    header {
-      background-color: #333;
-      color: white;
-      padding: 1rem;
-      text-align: center;
-    }
-
-    .perfil-container {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 80vh;
-    }
-
-    .perfil-card {
-      background-color: white;
-      padding: 2rem;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      width: 100%;
-      max-width: 400px;
-    }
-
-    .perfil-card h2 {
-      text-align: center;
-      margin-bottom: 1.5rem;
-    }
-
-    .perfil-item {
-      margin-bottom: 1rem;
-    }
-
-    .perfil-item label {
-      font-weight: bold;
-      display: block;
-      color: #555;
-    }
-
-    .perfil-item p {
-      margin: 0.3rem 0 0;
-      color: #333;
-    }
-
-    .logout-btn {
-      width: 100%;
-      padding: 10px;
-      background-color: #e74c3c;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      font-size: 16px;
-      cursor: pointer;
-    }
-
-    .logout-btn:hover {
-      background-color: #c0392b;
-    }
-
-    footer {
-      background-color: #333;
-      color: white;
-      text-align: center;
-      padding: 1rem;
-    }
-  </style>
 </head>
 <body>
 
     <header>
         <div class="container">
           <h1>DG Consulting Services</h1>
-          <nav>
-            <ul>
-              <li><a href="smnsweb.html">Home</a></li>
-              <li><a href="about.html">About</a></li>
-              <li><a href="services.html">Services</a></li>
-            </ul>
-          </nav>
+
+          <div class="perfil-item">
+          <label>Nombre de usuario</label>
+          <p id="nombre"></p>
+          </div>
+          
         </div>
+       
       </header>
 
   <div class="perfil-container">
@@ -114,14 +42,16 @@
         <p id="rol"></p>
       </div>
 
-      <button class="logout-btn" onclick="logout()">Cerrar Sesión</button>
+      <button id="logout-btn" onclick="logout()">Cerrar Sesión</button>
     </div>
   </div>
 
   <footer>
     <p>&copy; 2024 DG Consulting Services. Todos los derechos reservados.</p>
   </footer>
+<script src="../pages/script/perfil.js"></script>
 
+<script src="../pages/prueba.js"></script>
   
-</body>
+  </body>
 </html>

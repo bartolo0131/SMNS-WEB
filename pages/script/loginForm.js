@@ -1,8 +1,10 @@
 document.getElementById('loginForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const email = emailInput.value;
+  const password = passwordInput.value;
 
   try {
     const response = await fetch('http://localhost:3000/login', {
@@ -22,7 +24,15 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
       // Redirige al perfil
       window.location.href = 'perfil.html';
     } else if (response.status === 401) {
-      document.getElementById('message').textContent = 'Credenciales incorrectas.';
+      document.getElementById('message').textContent = 
+        'Las credenciales proporcionadas son incorrectas. Por favor, verifica tu nombre de usuario y contraseña e inténtalo de nuevo.';
+
+      // 🔴 Limpia los campos
+      emailInput.value = '';
+      passwordInput.value = '';
+
+      // 🔁 Enfoca el campo de correo
+      emailInput.focus();
     } else {
       document.getElementById('message').textContent = 'Error en el servidor.';
     }

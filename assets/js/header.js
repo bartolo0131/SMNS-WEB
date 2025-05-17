@@ -16,3 +16,15 @@ $(function(){
         getPage(currentPage);
     });
 });
+
+    $("#login-form").submit(function(event) {
+        event.preventDefault();
+
+        var isValidForm = true;
+        var email = $("#email").val();
+        var password = $("#password").val();
+
+        if(email === "") {
+            $("#email").addClass('is-invalid');
+            isValidForm = false;
+        }

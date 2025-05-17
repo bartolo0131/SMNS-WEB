@@ -130,3 +130,19 @@ footer {
 .logout-btn:hover {
     background-color: #c0392b;
 }
+
+.login-container {
+  /* Estilos para el contenedor principal */
+  display: flex;
+  flex-direction: column; /* Alinea los elementos verticalmente */
+  align-items: center; /* Centra horizontalmente */
+  margin: 0 auto; /* Márgenes para centrar en la página */
+}
+
+/* Estilos del encabezado */
+header {
+  background-color: #7a7c7a; /* Color de fondo del encabezado */
+  color: #c7b8b8; /* Color del texto */
+  padding: 20px 0; /* Espaciado superior e inferior */
+  text-align: center; /* Centra el texto dentro del encabezado */
+}
