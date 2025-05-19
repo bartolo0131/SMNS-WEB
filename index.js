@@ -1,0 +1,103 @@
+const express = require("express");
+const mysql = require("mysql");
+const app = express();
+const path = require('path');
+
+
+
+
+// Define carpeta de archivos estáticos
+app.use(express.static(path.join(__dirname, 'public')));
+app.set("views", path.join(__dirname, "views"));
+
+
+app.set("view engine", "ejs");
+
+let conexion = mysql.createConnection({
+  host: 'localhost',
+  user: 'root',
+  password: '',
+  database: 'smns'
+});
+
+
+app.use(express.json())
+const newLocal = app.use(express.urlencoded({ extended: false }));
+
+app.get("/registro", function(req, res)  {
+    res.render("registro")
+});
+
+
+app.get("/contacto", function(req, res) {
+    res.render("contacto");
+});
+
+// ingreso de usuarios nuevos
+
+app.post("/validar",function(req, res) {
+const datos =  req.body;
+    let nombre= datos.nombre;
+    let apellido= datos.apellido;
+    let genero= datos.genero;
+    let tip_identificacion= datos.identificacion;
+    let telefono = datos.Telefono;
+    let documento = datos.documento;
+    let correo = datos.email;
+    let fechanacimiento = datos.fechanacimiento;
+
+
+    let buscar = "select * from persona WHERE documento = '"+documento+"'"
+        conexion.query(buscar,function(error,row){
+        if(error){
+            throw error;
+        }else{
+            if(row.length >0){
+            console.log("usuario ya exite ");
+            res.render("registro", { mensaje: "The user is already registered",tipoMensaje: 'error'  });
+            }else {
+
+              let registrar = "INSERT INTO persona (nombre,apellido,genero,tip_identificacion,Telefono,fechanacimiento,documento,correo) VALUES ('"+nombre+"','"+apellido+"','"+genero+"','"+tip_identificacion+"','"+telefono+"','"+fechanacimiento+"','"+documento+"','"+correo+"') "
+
+               conexion.query(registrar,function(error){
+               if(error){
+                  throw error;
+                 }else{
+                 console.log("Datos cargados de manera correcta");
+                  res.render("registro", { mensaje: "User successfully registered",tipoMensaje: 'exito'
+                  });
+                }
+                });
+                
+
+            }
+            
+        }
+        });  
+
+
+});
+
+//ingreso de los datos de contacto
+app.post("/contactar", function(req, res) {
+    const { nombre,apellido,correo,telefono,paisorigen,tipocaso,comentario } = req.body;
+
+    let ingresar = "INSERT INTO contacts (nombre,apellido,email,telefono,paisorigen,tipocaso,comentario) VALUES (?,?,?,?,?,?,?)";
+
+    conexion.query(ingresar, [nombre, apellido,correo,telefono,paisorigen,tipocaso,comentario],function(error) {
+        if (error) {
+            console.error("Error al insertar datos:", error);
+            res.status(500).send("Error en el servidor");
+        } else {
+            console.log("Datos cargados correctamente");
+            res.render("contacto", { mensaje: "Usuario registrado con éxito", tipoMensaje: "exito" });
+        }
+    });
+});
+
+
+    
+
+app.listen(3000, () => {
+  console.log('Servidor corriendo en http://localhost:3000');
+});

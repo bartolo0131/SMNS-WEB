@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulario de Contacto</title>
+    <link rel="stylesheet" href="../css/contacto.css">
+</head>
+<body>
+    <header>
+        <div class="container2">
+            <h1>DG Consulting Services</h1>
+            <nav>
+                <ul>
+                    <li><a href="../view/home.html">Home</a></li>
+                    <li><a href="../view/about.html">About</a></li>
+                    <li><a href="../view/services.html">Services</a></li>
+                    <li><a href="/contacto">Contact</a></li>
+                    <li><a href="../view/loginC.html">Login</a></li>
+                 
+
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container">
+    <div class="text-content">
+        <h2>Do you need legal advice?<br> Contact us</h2>
+        <p>Leave us your information and we will contact you..</p>
+    </div>
+    
+  <div class="form-container" style="position: relative;">
+    <form action="/contactar" method="post" id="formcontacto">
+            <input type="text" class="form-control" id="nombre" name="nombre" placeholder="Enter user last name" required>
+            <input type="text" class="form-control" id="apellido" name="apellido" placeholder="Last name" required>
+            <input type="email" class="form-control" id="correo" name="correo" placeholder="Email to receive information" required>
+            <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="Phone number" required>
+            <input type="text" class="form-control" id="paisorigen" name="paisorigen" placeholder="Country of origin">
+            <select class="form-select" id="tipocaso" name="tipocaso">
+                <option selected disabled>Area of ​​interest</option>
+                <option>Civil Law</option>
+                <option>Criminal law</option>
+                <option>Labor Law</option>
+                <option>Others</option>
+            </select>
+            <textarea class="form-select" id="comentario" name="comentario" placeholder="¿How can we help you??"></textarea>
+            
+           
+    
+            <div class="checkbox-container">
+                <input type="checkbox" required>
+                <label>I accept the Personal Data Policies</label>
+            </div>
+            
+            <button type="submit" class="btn btn-success">Send</button>  
+        </form>
+    </div>
+  </div>
+
+     <footer>
+        <p>&copy; 2024 DG Consulting Services. Todos los derechos reservados.</p>
+    </footer>
+   
+
+  </body>
+</html>

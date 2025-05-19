@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registro de Usuarios</title>
+  <link rel="stylesheet" href="../css/registro.css" />
+
+
+</head>
+<body>
+  <header>
+    <div class="container">
+      <h1>DG Consulting Services</h1>
+      <nav>
+        
+        <ul>
+          <li><a href="./view/home.html">Home</a></li>
+          <li><a href="./view/about.html">About</a></li>
+          <li><a href="./view/services.html">Services</a></li>
+          <li><a href="../index.html">Contact</a></li>
+          <li><a href="../view/loginC.html">Login</a></li>
+         </ul>
+        
+      </nav>
+    </div>
+  </header>
+
+  <h2>Create an account</h2>
+
+  <div class="form-container" style="position: relative;">
+    <form action="/validar" method="post" id="formRegistro">
+
+      <div class="row">
+        <div class="col-3">
+          <div class="mb-4">
+            <label for="Nombre" class="form-label">Name</label>
+            <input type="text" class="form-control" id="Nombre" name="nombre" placeholder="Enter username">
+          </div>
+        </div>
+
+        <div class="col-3">
+          <div class="mb-4">
+            <label for="Apellido" class="form-label">Last name</label>
+            <input type="text" class="form-control" id="Apellido" name="apellido" placeholder="Enter user last name">
+          </div>
+        </div>
+
+        <div class="col-3">
+          <div class="mb-4">
+            <label for="genero" class="form-label"> Indicate your gender</label>
+            <select class="form-select" id="genero" name="genero">
+              <option selected value="">Open this select menu</option>
+              <option value="Male">Male</option>
+              <option value="Feminine">Feminine</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-3">
+          <div class="mb-4">
+            <label for="identificacion" class="form-label"> Indicate your gender</label>
+            <select class="form-select" id="identificacion" name="identificacion">
+              <option selected value="">Open this select menu</option>
+              <option value="cedula">ID</option>
+              <option value="pasaporte">Passport</option>
+              <option value="DNI">DNI</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-3">
+          <div class="mb-4">
+            <label for="documento" class="form-label">Document number</label>
+            <input type="text" class="form-control" id="documento" name="documento" placeholder="Enter document number">
+          </div>
+        </div>   
+
+        <div class="col-3">
+          <div class="mb-4">
+            <label for="fechanacimiento" class="form-label">Date of birth</label>
+            <input type="date" class="form-control" id="fechanacimiento" name="fechanacimiento"> 
+          </div>
+        </div>
+
+        <div class="col-3">
+          <div class="mb-4">
+            <label for="email" class="form-label">email address</label>
+            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address">
+          </div>
+        </div>         
+
+        <div class="col-3">
+          <div class="mb-4">
+            <label for="Telefono" class="form-label">Contact number</label>
+            <input type="text" class="form-control" id="Telefono" name="Telefono" placeholder="Enter user phone number">
+          </div>
+        </div>  
+      </div>  
+
+      <div class="row">
+        <div class="col-12">
+          <button type="submit" class="btn btn-success">Register</button>   
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <button type="reset" class="btn btn-info">Clean</button>
+        </div>
+      </div>
+
+    </form>
+
+    <% if (typeof mensaje !== 'undefined') { %>
+      <div id="mensajeFlotante" class="mensaje-flotante">
+        <span id="cerrarMensaje" class="cerrar">&times;</span>
+        <p><%= mensaje %></p>
+      </div>
+    <% } %>
+
+  </div>
+
+  <footer>
+    <div class="container">
+      <p>&copy; 2024 DG Consulting Services. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    const mensajeFlotante = document.getElementById('mensajeFlotante');
+    const cerrarMensaje = document.getElementById('cerrarMensaje');
+
+    if(cerrarMensaje){
+      cerrarMensaje.onclick = function(){
+        mensajeFlotante.style.display = 'none';
+      }
+    }
+  </script>
+
+</body>
+</html>
