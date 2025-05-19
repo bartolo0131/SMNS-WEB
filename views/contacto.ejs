@@ -55,6 +55,15 @@
             
             <button type="submit" class="btn btn-success">Send</button>  
         </form>
+
+
+     <% if (typeof mensaje !== 'undefined') { %>
+      <div id="mensajeFlotante" class="mensaje-flotante">
+        <span id="cerrarMensaje" class="cerrar">&times;</span>
+        <p><%= mensaje %></p>
+      </div>
+     <% } %>
+
     </div>
   </div>
 
@@ -62,6 +71,17 @@
         <p>&copy; 2024 DG Consulting Services. Todos los derechos reservados.</p>
     </footer>
    
+
+    <script>
+    const mensajeFlotante = document.getElementById('mensajeFlotante');
+    const cerrarMensaje = document.getElementById('cerrarMensaje');
+
+    if(cerrarMensaje){
+      cerrarMensaje.onclick = function(){
+        mensajeFlotante.style.display = 'none';
+      }
+    }
+  </script>
 
   </body>
 </html>
