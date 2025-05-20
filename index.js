@@ -90,7 +90,7 @@ app.post("/contactar", function(req, res) {
             res.status(500).send("Error en el servidor");
         } else {
             console.log("Datos cargados correctamente");
-            res.render("contacto", { mensaje: "That's right, we're ready to get in touch with you as soon as possible. One of our lawyers will contact you to guide you through your process.", tipoMensaje: "exito" });
+            res.render("contacto", { mensaje: "We're ready to contact you as soon as possible. One of our attorneys will contact you to guide you through your process.", tipoMensaje: "exito" });
         }
     });
 });

@@ -19,7 +19,7 @@ header .container,
 footer .container {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+ text-align: center;
   padding: 0 20px;
 }
 
@@ -81,7 +81,7 @@ nav ul li a {
 form input, form textarea {
   margin-bottom: 12px;
   padding: 10px;
-  border: 1px solid #1d027e;
+  border: 1px solid #c4bfd6;
   border-radius: 15px;
   background-color: #f8f2f2;
   display: flex;
@@ -111,11 +111,11 @@ form button {
 
 /* Estilos para el pie de página */
 footer {
-  background-color: rgba(60, 59, 88, 0.7);
-  color: rgb(126, 118, 118);
+  background-color: rgba(58, 58, 74, 0.7);
+  color: rgb(241, 228, 228);
   text-align: center;
   padding: 10px 20px;
-  margin-top: auto;  
+  margin-top: center;  
 }
 
 .input-group {
