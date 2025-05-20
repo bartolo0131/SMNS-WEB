@@ -74,45 +74,55 @@ nav ul li a {
     font-size: 1.5rem; /* Tamaño del texto de los enlaces */
 }
 
-.perfil-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 80vh;
-}
 
-.perfil-card {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(59, 60, 65, 0.1);
-    width: 100%;
-    max-width: 400px;
-}
 
-.perfil-card h2 {
-    text-align: center;
-    margin-bottom: 1.5rem;
-}
+.hero {
+      background-image: url('29c7a797-5077-4044-92db-f91a96045585.png'); /* Actualiza la ruta si es necesario */
+      background-size: cover;
+      background-position: center;
+      color: white;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 5%;
+    }
 
-.perfil-item {
-    margin-bottom: 1rem;
-}
+    .overlay {
+      background-color: rgba(0, 0, 0, 0.6);
+      padding: 40px;
+      max-width: 500px;
+      border-radius: 20px;
+    }
 
-.perfil-item label {
-    font-weight: bold;
-    display: block;
-    color: #555;
-}
-.perfil-item p {
-    margin: 0.3rem 0 0;
-    color: #333;
-}
+    .hero h1 {
+      font-size: 2.2em;
+      margin: 0 0 10px 0;
+      font-weight: normal;
+    }
 
-footer {
-    background-color: rgba(227, 83, 83, 0.7);
-    color: rgb(126, 118, 118);
-    text-align: center;
-    padding: 10px 20px;
-    margin-top: auto;
-}
+    .highlight {
+      color: #FFD700;
+      font-weight: bold;
+    }
+
+    .hero p {
+      font-size: 1.1em;
+      margin: 20px 0;
+    }
+
+    .btn {
+      background-color: #FFD700;
+      color: black;
+      padding: 10px 20px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+      text-transform: uppercase;
+      transition: background-color 0.3s ease;
+      border-radius: 5px;
+    }
+
+    .btn:hover {
+      background-color: #e6c200;
+    }

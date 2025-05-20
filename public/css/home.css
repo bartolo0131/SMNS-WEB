@@ -69,14 +69,18 @@ nav ul li a {
 
 /* Tamaño grande del texto Experts in migration consulting Your Service */
 .hero{
-    font-size: 4rem; /* Tamaño grande del texto del párrafo */
-    margin: 50px 0 0;
-    font-style: italic; /* Estilo en cursiva */
+    font-size: 100rem; /* Tamaño grande del texto del párrafo */
+    font-style: initial; /* Estilo en cursiva */
     justify-content: center;
-    align-items: center;
     text-align: center;
-    color: rgb(15, 15, 190); /* Color del texto */
-    padding: 20px;
+
+    
+
+}
+h3 {
+    font-size:xx-large;
+    color: #38344d;
+    font-size: 3rem; 
 }
 
 
@@ -88,13 +92,17 @@ footer .container {
   padding: 0 20px;
 }
 
-
-
-
-/* Estilos para las secciones */
-section {
-    padding: 1px 10px;
+main {
+  max-width: 900px;
+  margin: 30px auto;
+  padding: 20px;
+  background-color: rgb(174, 165, 165);
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
+
+
+
 
 
 
@@ -109,16 +117,14 @@ footer {
 p {
     font-size: 20px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
+     color: #261f3e;
 }
 
 h2 {
     font-size:xx-large;
-    color: #24078f;
+    color: #3e0bf7;
 }
 
-h3{
-    font-size: xx-large;
-    color: darkgreen;
-}
+
 
 

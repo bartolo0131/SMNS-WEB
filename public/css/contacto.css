@@ -88,19 +88,23 @@ body {
     height: 100vh;
     padding: 40px;
 }
+
+
+
 .text-content {
-    width: 60%;
-    padding-left: 70px;
+    width: 70%;
+    padding-left: 350px;
 }
 .text-content h2 {
-    font-size: 40px;
+    font-size: 30px;
     font-weight: bold;
+    color: rgb(124, 124, 157);
 }
 
 .text-content p {
-    font-size: 20px;
+    font-size: 30px;
     font-weight: bold;
-    color: rgb(247, 247, 250);
+    color: rgb(39, 39, 41);
     
 }
 .form-container {
@@ -208,3 +212,13 @@ p {
 .cerrar:hover {
  color: #07ee0e;
 }
+
+    .hero {
+      background-image: url('3fc36dac-aa14-480d-88dc-a1e6240db255.png'); /* Tu imagen de fondo */
+      background-size: cover;
+      background-position: center;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
