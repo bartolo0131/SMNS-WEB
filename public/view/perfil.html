@@ -1,55 +1,41 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Perfil de Usuario</title>
-  <link rel="stylesheet" href="../css/perfil.css" />
+  <head>
+    <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+   <title>Perfil de Usuario</title>
+   <link rel="stylesheet" href="../css/perfil.css" />
 
-</head>
-<body>
+  </head>
+  <body>
 
-    <header>
+      <header>
         <div class="container">
           <h1>DG Consulting Services</h1>
 
-          <div class="perfil-item">
-          <label>Nombre de usuario</label>
-          <p id="nombre"></p>
+          <div class="user-info">
+          <span class="perfil-nombre">xxx</span>
+          <span class="perfil-rol">Administrador</span>
+          <form action="/logout" method="get">
+          <button id="btn" type="submit">Cerrar Sesión</button>
+          </form>
           </div>
-          
         </div>
+         
+          
+      
        
       </header>
 
-  <div class="perfil-container">
-    <div class="perfil-card">
-      <h2>Mi Perfil</h2>
-      <div class="perfil-item">
-        <label>Nombre de usuario</label>
-        <p id="nombre"></p>
-      </div>
-      <div class="perfil-item">
-        <label>Email</label>
-        <p id="email"></p>
-      </div>
-      <div class="perfil-item">
-        <label>ID Cliente</label>
-        <p id="cliente"></p>
-      </div>
-      <div class="perfil-item">
-        <label>Rol</label>
-        <p id="rol"></p>
-      </div>
-  
-      <button id="logout-btn" onclick="logout()">Cerrar Sesión</button>
-    </div>
-  </div>
 
-  <footer>
-    <p>&copy; 2024 DG Consulting Services. Todos los derechos reservados.</p>
-  </footer>
 
-  
+
+
+
+
+     <footer>
+       <p>&copy; 2024 DG Consulting Services. All rights reserved..</p>
+     </footer>
+
   </body>
 </html>

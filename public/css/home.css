@@ -55,7 +55,7 @@ nav ul {
 }
 
 nav ul li {
-    margin: 0 20px;
+  margin: 0 20px;
 }
 
 /* Estilos para los navegadores */
@@ -78,9 +78,9 @@ nav ul li a {
 
 }
 h3 {
-    font-size:xx-large;
-    color: #38344d;
-    font-size: 3rem; 
+  font-size:xx-large;
+  color: #38344d;
+  font-size: 3rem; 
 }
 
 
@@ -93,14 +93,19 @@ footer .container {
 }
 
 main {
-  max-width: 900px;
-  margin: 30px auto;
+  max-width: 1000px;
+  margin: 10px auto;
   padding: 20px;
   background-color: rgb(174, 165, 165);
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
 
+li {
+    font-size: 18px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+     color: #261f3e;
+}
 
 
 
@@ -115,7 +120,7 @@ footer {
     margin-top: auto;  
 }
 p {
-    font-size: 20px;
+    font-size: 18px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
      color: #261f3e;
 }
@@ -124,6 +129,8 @@ h2 {
     font-size:xx-large;
     color: #3e0bf7;
 }
+
+
 
 
 

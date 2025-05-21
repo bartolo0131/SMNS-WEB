@@ -2,8 +2,14 @@ const express = require("express");
 const mysql = require("mysql");
 const app = express();
 const path = require('path');
+const session = require("express-session");
+const connection = require('./db');
 
-
+app.use(session({
+  secret: 'clave_secreta',
+  resave: false,
+  saveUninitialized: false
+}));
 
 
 // Define carpeta de archivos estáticos
@@ -18,11 +24,21 @@ let conexion = mysql.createConnection({
   user: 'root',
   password: '',
   database: 'smns'
+
+});
+
+app.get("/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Error al cerrar sesión:", err);
+      return res.status(500).send("Error al cerrar sesión");
+    }
+    res.redirect("/view/loginC.html"); 
+  });
 });
 
 
-app.use(express.json())
-const newLocal = app.use(express.urlencoded({ extended: false }));
+
 
 app.get("/registro", function(req, res)  {
     res.render("registro")
@@ -45,6 +61,9 @@ const datos =  req.body;
     let documento = datos.documento;
     let correo = datos.email;
     let fechanacimiento = datos.fechanacimiento;
+
+
+    
 
 
     let buscar = "select * from persona WHERE documento = '"+documento+"'"

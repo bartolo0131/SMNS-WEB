@@ -77,7 +77,7 @@ nav ul li a {
 
 
 .hero {
-      background-image: url('29c7a797-5077-4044-92db-f91a96045585.png'); /* Actualiza la ruta si es necesario */
+      
       background-size: cover;
       background-position: center;
       color: white;
@@ -109,9 +109,9 @@ nav ul li a {
     .hero p {
       font-size: 1.1em;
       margin: 20px 0;
-    }
+}
 
-    .btn {
+.btn {
       background-color: #FFD700;
       color: black;
       padding: 10px 20px;
@@ -121,8 +121,20 @@ nav ul li a {
       text-transform: uppercase;
       transition: background-color 0.3s ease;
       border-radius: 5px;
-    }
+}
 
-    .btn:hover {
-      background-color: #e6c200;
-    }
+
+estilo pied de pagina
+footer {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: rgb(126, 118, 118);
+    text-align: center;
+    padding: 10px 20px;
+    margin-top: auto;  
+}
+p {
+    font-size: 20px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+     color: #eeeef1;
+}
+

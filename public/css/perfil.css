@@ -42,29 +42,11 @@ nav ul {
   margin: 0;
   padding: 0;
   display: flex;
+  justify-content: center; /* Centra los elementos de la lista */
 }
 
-nav ul li {
-  margin-left: 15px;
-}
 
-nav ul li a {
-  color: white;
-  text-decoration: none;
-  font-size: 12px;
-}
 
-nav ul {
-    list-style: none; /* Elimina los puntos de la lista */
-    padding: 0; /* Elimina el relleno */
-    margin: 0; /* Elimina el margen */
-    display: flex; /* Usa flexbox para la alineación */
-    justify-content: center; /* Centra los elementos de la lista */
-}
-
-nav ul li {
-    margin: 0 20px;
-}
 
 /* Estilos para los navegadores */
 nav ul li a {
@@ -74,48 +56,13 @@ nav ul li a {
     font-size: 1.5rem; /* Tamaño del texto de los enlaces */
 }
 
-.perfil-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 80vh;
-}
 
-.perfil-card {
-    background-color: white;
-    padding: 2rem;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(59, 60, 65, 0.1);
-    width: 100%;
-    max-width: 400px;
-}
 
-.perfil-card h2 {
-    text-align: center;
-    margin-bottom: 1.5rem;
-}
 
-.perfil-item {
-    margin-bottom: 1rem;
-}
 
-.perfil-item label {
-    font-weight: bold;
-    display: block;
-    color: #555;
-}
-.perfil-item p {
-    margin: 0.3rem 0 0;
-    color: #333;
-}
 
-footer {
-    background-color: rgba(227, 83, 83, 0.7);
-    color: rgb(126, 118, 118);
-    text-align: center;
-    padding: 10px 20px;
-    margin-top: auto;
-}
+
+
 
 /* Estilos para el pie de página */
 footer {
@@ -128,10 +75,31 @@ footer {
 p {
     font-size: 20px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-     color: #261f3e;
+     color: #eeeef1;
 }
 
-h2 {
-    font-size:xx-large;
-    color: #3e0bf7;
+boton cerrar cesion 
+
+.btn {
+  
+
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  font-size: 14px;
 }
+
+#btn:hover {
+  background-color: #FFD700;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+  color: black;
+  padding: 3px 8px;
+  border: none;
+  text-transform: uppercase;
+
+  
+}
+
+
