@@ -25,7 +25,6 @@ app.use(session({
     saveUninitialized:true
 }));
 
-//incocamos el modulo de conexion de la BD
 
 
 app.get('/', (req, res) => { // Corrección en 'app.get'
