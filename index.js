@@ -3,7 +3,7 @@ const mysql = require("mysql");
 const app = express();
 const path = require('path');
 const session = require("express-session");
-const connection = require('./db');
+const connection = require('./backend/db');
 
 app.use(session({
   secret: 'clave_secreta',

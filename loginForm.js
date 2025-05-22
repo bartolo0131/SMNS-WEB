@@ -16,7 +16,7 @@ document.getElementById('loginForm').addEventListener('submit', async function (
   
       if (response.status === 200) {
         // Login exitoso me lleva redirigir al perfil
-        window.location.href = 'perfil.html'; 
+        window.location.href = 'services.html'; 
       } else if (response.status === 401) {
         document.getElementById('message').textContent = 
         'The provided credentials are incorrect. Please check your Email and password and try again.';

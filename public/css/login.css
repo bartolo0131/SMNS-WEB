@@ -126,6 +126,19 @@ footer {
   margin-bottom: 200px; /* Espacio entre el login y el footer */
 }
 
+footer {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: rgb(126, 118, 118);
+    text-align: center;
+    padding: 10px 20px;
+    margin-top: auto;  
+}
+p {
+    font-size: 20px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+     color: #eeeef1;
+}
+
 
 
 
