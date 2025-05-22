@@ -25,7 +25,7 @@ app.use(session({
     saveUninitialized:true
 }));
 
-require ('./')
+
 
 app.get('/', (req, res) => { // Corrección en 'app.get'
     res.send('Hola');
