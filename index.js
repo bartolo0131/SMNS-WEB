@@ -3,21 +3,10 @@ const mysql = require("mysql");
 const app = express();
 const path = require('path');
 const session = require("express-session");
-const connection = require('./backend/db');
+const bcryptjs = require('bcryptjs'); 
+const { error, time } = require("console");
 
-app.use(session({
-  secret: 'clave_secreta',
-  resave: false,
-  saveUninitialized: false
-}));
-
-
-// Define carpeta de archivos estáticos
 app.use(express.static(path.join(__dirname, 'public')));
-app.set("views", path.join(__dirname, "views"));
-
-
-app.set("view engine", "ejs");
 
 let conexion = mysql.createConnection({
   host: 'localhost',
@@ -27,23 +16,97 @@ let conexion = mysql.createConnection({
 
 });
 
-app.get("/logout", (req, res) => {
-  req.session.destroy((err) => {
-    if (err) {
-      console.error("Error al cerrar sesión:", err);
-      return res.status(500).send("Error al cerrar sesión");
-    }
-    res.redirect("/view/loginC.html"); 
-  });
+
+app.use(session({
+  secret: 'secreto_seguro',
+  resave: false,
+  saveUninitialized: false
+}));
+
+
+app.set("view engine", "ejs");
+
+app.use(express.json());
+app.use(express.urlencoded({extended:false}));
+app.use(express.urlencoded({ extended: true }));
+
+app.get("/contacto", function(req, res) {
+    res.render("contacto");
 });
 
+app.get("/loginC", function(req, res) {
+    res.render("login");
+});
+
+
+//login 
+
+app.post('/login', async (req, res) => {
+  const login = req.body.login;
+  const contrasena = req.body.password;
+
+  if (login && contrasena) {
+    conexion.query('SELECT * FROM usuarios WHERE login = ?', [login], async (error, results) => {
+      if (error) {
+        console.error('Error en la consulta:', error);
+        return res.status(500).send('Error interno del servidor');
+      }
+
+      if (results.length === 0 || contrasena !== results[0].Contrasena) {
+        res.render('login',{
+          alert:true,
+          alertTitle: "Error",
+          alertMessage : "Usuario y/o contraseña incorretas",
+          alertIcon :"error",
+          showconfirmButton: true,
+          time : false,
+          ruta : 'login'
+
+        });
+      } else {
+        req.session.login =results [0].login
+        res.render('login',{
+          alert:true,
+          alertTitle: "Conexion exitosa",
+          alertMessage : "LOGIN CORRECTO",
+          alertIcon :"success",
+          showconfirmButton: false,
+          time : 1500,
+          ruta : ''
+
+        });
+      }
+    });
+  }  else {
+    res.render('login', { mensaje: 'Por favor, llena todos los campos' });
+  }
+});
+
+
+
+
+
+app.post("/contactar", function(req, res) {
+ const { nombre,apellido,correo,telefono,paisorigen,tipocaso,comentario } = req.body;
+
+    let ingresar = "INSERT INTO contacts (nombre,apellido,email,telefono,paisorigen,tipocaso,comentario) VALUES (?,?,?,?,?,?,?)";
+    
+    conexion.query(ingresar, [nombre, apellido,correo,telefono,paisorigen,tipocaso,comentario],function(error) {
+        if (error) {
+            console.error("Error al insertar datos:", error);
+            res.status(500).send("Error en el servidor");
+        } else {
+            console.log("Datos cargados correctamente");
+            res.render("contacto", { mensaje: "We're ready to contact you as soon as possible. One of our attorneys will contact you to guide you through your process.", tipoMensaje: "exito" });
+        }
+    });
+});
 
 
 
 app.get("/registro", function(req, res)  {
     res.render("registro")
 });
-
 
 app.get("/contacto", function(req, res) {
     res.render("contacto");
@@ -61,10 +124,8 @@ const datos =  req.body;
     let documento = datos.documento;
     let correo = datos.email;
     let fechanacimiento = datos.fechanacimiento;
-
-
+   
     
-
 
     let buscar = "select * from persona WHERE documento = '"+documento+"'"
         conexion.query(buscar,function(error,row){
@@ -94,28 +155,11 @@ const datos =  req.body;
         }
         });  
 
-
-});
-
-//ingreso de los datos de contacto
-app.post("/contactar", function(req, res) {
-    const { nombre,apellido,correo,telefono,paisorigen,tipocaso,comentario } = req.body;
-
-    let ingresar = "INSERT INTO contacts (nombre,apellido,email,telefono,paisorigen,tipocaso,comentario) VALUES (?,?,?,?,?,?,?)";
-
-    conexion.query(ingresar, [nombre, apellido,correo,telefono,paisorigen,tipocaso,comentario],function(error) {
-        if (error) {
-            console.error("Error al insertar datos:", error);
-            res.status(500).send("Error en el servidor");
-        } else {
-            console.log("Datos cargados correctamente");
-            res.render("contacto", { mensaje: "We're ready to contact you as soon as possible. One of our attorneys will contact you to guide you through your process.", tipoMensaje: "exito" });
-        }
-    });
 });
 
 
-    
+
+
 
 app.listen(3000, () => {
   console.log('Servidor corriendo en http://localhost:3000');

@@ -56,16 +56,21 @@
       </div>
     </footer>
 
-
-<script>
-  Swal.fire({
-    title: 'Error',
-    text: 'Usuario o contraseña incorrectos',
-    icon: 'error',
-    showConfirmButton: true,
-    timer: false
-  });
-</script>
+    
+        <% if (alert) { %>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script>
+          Swal.fire({
+            title: '<%= alertTitle %>',
+            text: '<%= alertMessage %>',
+            icon: '<%= alertIcon %>',
+            showConfirmButton: <%= showconfirmButton %>,
+            timer: <%= time %>
+          }).then(() => {
+            window.location = "<%= ruta %>";
+          });
+        </script>
+        <% } %>
 
     
   </body>

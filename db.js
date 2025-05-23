@@ -1,5 +1,7 @@
 require('dotenv').config();
 const mysql = require('mysql');
+const path = require('path');
+const session = require("express-session");
 
 
 const connection = mysql.createConnection({
@@ -16,8 +18,10 @@ connection.connect(error => {
         console.error('Error conectando a MySQL:' + error);
         return;
     }
-    console.log('Conectado a MySQL');
+    console.log('Conectado a MySQL por fin');
 });
 
 module.exports = connection;
+
+
 
