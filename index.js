@@ -53,16 +53,17 @@ app.post('/login', async (req, res) => {
       }
 
       if (results.length === 0 || contrasena !== results[0].Contrasena) {
-        res.render('login',{
-          alert:true,
-          alertTitle: "Error",
-          alertMessage : "Usuario y/o contraseña incorretas",
-          alertIcon :"error",
-          showconfirmButton: true,
-          time : false,
-          ruta : 'login'
-
-        });
+          app.get('/login', (req, res) => {
+            res.render('login', {
+              alert: false,
+              alertTitle: '',
+              alertMessage: '',
+              alertIcon: '',
+              showconfirmButton: false,
+              time: false,
+              ruta: ''
+            });
+          });
       } else {
         req.session.login =results [0].login
         res.render('login',{
