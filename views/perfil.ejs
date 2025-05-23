@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+   <title>Perfil de Usuario</title>
+   <link rel="stylesheet" href="../css/perfil.css" />
+
+  </head>
+  <body>
+
+      <header>
+        <div class="container">
+
+        <% if (login) { %>
+
+        
+          <h1>DG Consulting Services <strong>name</strong> </h1>
+
+    
+
+        }
+
+          <div class="user-info">
+          <span class="perfil-nombre">xxx</span>
+          <span class="perfil-rol">Administrador</span>
+          <form action="/logout" method="get">
+          <button id="btn" type="submit">Cerrar Sesión</button>
+          </form>
+          </div>
+         </div>
+         
+          
+      
+       
+      </header>
+
+
+
+
+
+
+
+     <footer>
+       <p>&copy; 2024 DG Consulting Services. All rights reserved..</p>
+     </footer>
+
+  </body>
+</html>

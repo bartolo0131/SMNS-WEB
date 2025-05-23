@@ -5,6 +5,7 @@ const path = require('path');
 const session = require("express-session");
 const bcryptjs = require('bcryptjs'); 
 const { error, time } = require("console");
+const { name } = require("ejs");
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -34,8 +35,12 @@ app.get("/contacto", function(req, res) {
     res.render("contacto");
 });
 
-app.get("/loginC", function(req, res) {
+app.get("/login", function(req, res) {
     res.render("login");
+});
+
+app.get("/perfil", function(req, res) {
+    res.render("perfil");
 });
 
 
@@ -53,20 +58,20 @@ app.post('/login', async (req, res) => {
       }
 
       if (results.length === 0 || contrasena !== results[0].Contrasena) {
-          app.get('/login', (req, res) => {
+
             res.render('login', {
               alert: false,
-              alertTitle: '',
-              alertMessage: '',
-              alertIcon: '',
+              alertTitle: 'Credenciales erradas',
+              alertMessage: 'USUARIO O CONTRASEÑA INCORRECTOS',
+              alertIcon: 'error',
               showconfirmButton: false,
               time: false,
               ruta: ''
             });
-          });
+
       } else {
         req.session.login =results [0].login
-        res.render('login',{
+        res.render('perfil',{
           alert:true,
           alertTitle: "Conexion exitosa",
           alertMessage : "LOGIN CORRECTO",
@@ -84,6 +89,24 @@ app.post('/login', async (req, res) => {
 });
 
 
+//direccionamiento
+
+
+
+
+app.get('/', (req, res) => {
+    if (req.session.loggedin) {
+        res.render('registro', {
+            login: true,
+            name: req.session.name
+        });
+    } else {
+        res.render('registro', {
+            login: false,
+            name: 'Debe iniciar sesión'
+        });
+    }
+});
 
 
 
