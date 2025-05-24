@@ -9,7 +9,7 @@ html, body {
 body {
     display: flex;
     flex-direction: column;
-    background-image: url('https://images.pexels.com/photos/4497200/pexels-photo-4497200.jpeg');
+   /* background-image: url('https://images.pexels.com/photos/4497200/pexels-photo-4497200.jpeg');*/
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;

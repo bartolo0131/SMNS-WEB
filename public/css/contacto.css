@@ -136,7 +136,7 @@ body {
     font-weight: bold;
 }
 .form-container button:hover {
-    background: rgb(18, 180, 67);
+    background: #FFD700;;
 }
 .checkbox-container {
     display: flex;
@@ -185,7 +185,7 @@ p {
   max-width: 300px;
   z-index: 20;
   font-weight: bold;
-  color: rgb(44, 219, 62);
+  color: #FFD700;;
   border: 2px solid;
    background-color: #c5f198;
 }
@@ -203,5 +203,5 @@ p {
 }
 
 .cerrar:hover {
- color: #07ee0e;
+ color: #FFD700;
 }

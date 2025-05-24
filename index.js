@@ -6,8 +6,17 @@ const session = require("express-session");
 const bcryptjs = require('bcryptjs'); 
 const { error, time } = require("console");
 const { name } = require("ejs");
+const { fileURLToPath } = require("url");
+
 
 app.use(express.static(path.join(__dirname, 'public')));
+/*
+app.set('view'join(__dirname,'views'))  
+*/
+app.set("view engine", "ejs");
+app.set('views', path.join(__dirname, 'views'));
+
+//conexion con el servidor 
 
 let conexion = mysql.createConnection({
   host: 'localhost',
@@ -25,11 +34,14 @@ app.use(session({
 }));
 
 
-app.set("view engine", "ejs");
+
+
 
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 app.use(express.urlencoded({ extended: true }));
+
+//renderisamos las vistas 
 
 app.get("/contacto", function(req, res) {
     res.render("contacto");
@@ -42,6 +54,11 @@ app.get("/login", function(req, res) {
 app.get("/perfil", function(req, res) {
     res.render("perfil");
 });
+
+app.get("/registro", function(req, res)  {
+    res.render("registro")
+});
+
 
 
 //login 
@@ -58,55 +75,61 @@ app.post('/login', async (req, res) => {
       }
 
       if (results.length === 0 || contrasena !== results[0].Contrasena) {
-
-            res.render('login', {
-              alert: false,
-              alertTitle: 'Credenciales erradas',
-              alertMessage: 'USUARIO O CONTRASEÑA INCORRECTOS',
-              alertIcon: 'error',
-              showconfirmButton: false,
-              time: false,
-              ruta: ''
-            });
-
-      } else {
-        req.session.login =results [0].login
-        res.render('perfil',{
-          alert:true,
-          alertTitle: "Conexion exitosa",
-          alertMessage : "LOGIN CORRECTO",
-          alertIcon :"success",
+        res.render('login', {
+          alert: true,
+          alertTitle: 'Credenciales erradas',
+          alertMessage: 'USUARIO O CONTRASEÑA INCORRECTOS',
+          alertIcon: 'error',
           showconfirmButton: false,
-          time : 1500,
-          ruta : ''
-
+          time: false,
+          ruta: 'login'
         });
+      } else {
+        // Guardar datos en sesión
+        req.session.loggedin = true;
+        req.session.name = results[0].login;
+        req.session.id_rol = results[0].id_rol;
+
+        // Redirigir según rol
+        switch (results[0].id_rol) {
+          case 5: // Ejemplo: administrador
+            res.redirect('/perfil');
+            break;
+          case 2: // Ejemplo: usuario estándar
+            res.redirect('/registro');
+            break;
+          default:
+            res.redirect('/contacto'); // Página por defecto
+        }
       }
     });
-  }  else {
-    res.render('login', { mensaje: 'Por favor, llena todos los campos' });
+  } else {
+    res.render('login', {
+      alert: true,
+      alertTitle: 'Campos vacíos',
+      alertMessage: 'Por favor, llena todos los campos',
+      alertIcon: 'warning',
+      showconfirmButton: true,
+      time: false,
+      ruta: 'login'
+    });
   }
 });
 
+//cerrar cesion 
 
-//direccionamiento
-
-
-
-
-app.get('/', (req, res) => {
-    if (req.session.loggedin) {
-        res.render('registro', {
-            login: true,
-            name: req.session.name
-        });
-    } else {
-        res.render('registro', {
-            login: false,
-            name: 'Debe iniciar sesión'
-        });
+app.post('/logout', (req, res) => {
+  req.session.destroy(err => {
+    if (err) {
+      console.error(err);
+      return res.send('Error al cerrar sesión');
     }
+    res.redirect('/contacto');  // O la ruta que tengas para login
+  });
 });
+
+
+
 
 
 
@@ -128,13 +151,7 @@ app.post("/contactar", function(req, res) {
 
 
 
-app.get("/registro", function(req, res)  {
-    res.render("registro")
-});
 
-app.get("/contacto", function(req, res) {
-    res.render("contacto");
-});
 
 // ingreso de usuarios nuevos
 
