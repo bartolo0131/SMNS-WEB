@@ -16,53 +16,6 @@ body {
     font-family: Arial, sans-serif;
 }
 
-header, footer {
-  background-color: #6d6e6c;
-  color: #f2d3d0;
-  padding: 10px 0;
-  text-align: center;
-}
-
-header .container,
-footer .container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 20px;
-}
-
-header h1 {
-  margin: 0;
-  font-size: 24px;
-  font-weight: bold;
-}
-
-nav ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  justify-content: center; /* Centra los elementos de la lista */
-}
-
-
-
-
-/* Estilos para los navegadores */
-nav ul li a {
-    color: rgb(247, 241, 241);
-    text-decoration: none;
-    font-weight: bold;
-    font-size: 1.5rem; /* Tamaño del texto de los enlaces */
-}
-
-
-
-
-
-
-
-
 
 /* Estilos para el pie de página */
 footer {

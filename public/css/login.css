@@ -1,70 +1,30 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+}
+
 body {
-  margin: 0;
-  padding: 0;
-  height: 80vh; /* Ocupa el 100% de la altura de la ventana de visualización */
-  background-image: url('https://images.pexels.com/photos/4497200/pexels-photo-4497200.jpeg'); /* Ruta a tu imagen */
-  background-size: cover; /* Ajusta la imagen para cubrir todo el contenedor */
-  background-position: center; /* Centra la imagen en el contenedor */
-  background-repeat: no-repeat; /* Evita que la imagen se repita */
+    display: flex;
+    flex-direction: column;
+    background-image: url('https://images.pexels.com/photos/4497200/pexels-photo-4497200.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-family: Arial, sans-serif;
 }
 
-header, footer {
-  background-color: #6d6e6c;
-  color: #f2d3d0;
-  padding: 10px 0;
-  text-align: center;
+
+
+.login-container {
+    text-align: center;
+    
+    padding: 50px;
+    border-radius: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 450px;
 }
 
-header .container,
-footer .container {
-  display: flex;
-  justify-content: space-between;
- text-align: center;
-  padding: 0 20px;
-}
-
-header h1 {
-  margin: 0;
-  font-size: 24px;
-  font-weight: bold;
-}
-
-nav ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-}
-
-nav ul li {
-  margin-left: 15px;
-}
-
-nav ul li a {
-  color: white;
-  text-decoration: none;
-  font-size: 12px;
-}
-
-nav ul {
-  list-style: none; /* Elimina los puntos de la lista */
-  padding: 0; /* Elimina el relleno */
-  margin: 0; /* Elimina el margen */
-  display: flex; /* Usa flexbox para la alineación */
-  justify-content: center; /* Centra los elementos de la lista */
-}
-
-nav ul li {
-  margin: 0 20px;
-}
-
-/* Estilos para los navegadores */
-nav ul li a {
-  color: rgb(247, 241, 241);
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1.5rem; /* Tamaño del texto de los enlaces */
-}
 
 
 .login-container {
@@ -73,22 +33,23 @@ nav ul li a {
   flex-direction: column; /* Alinea los elementos verticalmente */
   align-items: center; /* Centra horizontalmente */
   margin: 0 auto; /* Márgenes para centrar en la página */
+  
 }
 
 
 
 /* cajas de los imput  */
 form input, form textarea {
-  margin-bottom: 12px;
+
   padding: 10px;
   border: 1px solid #c4bfd6;
-  border-radius: 15px;
+  border-radius: 20px;
   background-color: #f8f2f2;
   display: flex;
   flex-direction: column; /* Alinea los elementos verticalmente */
   align-items: center; /* Centra horizontalmente los elementos */
   width: 400px; /* Ancho opcional del formulario */
-  margin: 0 auto; /* Centra las cajas de imput*/
+  margin:  auto; /* Centra las cajas de imput*/
 
 }
 
@@ -110,16 +71,10 @@ form button {
 
 
 /* Estilos para el pie de página */
-footer {
-  background-color: rgba(58, 58, 74, 0.7);
-  color: rgb(241, 228, 228);
-  text-align: center;
-  padding: 10px 20px;
-  margin-top: center;  
-}
+
 
 .input-group {
-  margin-bottom: 35px; /* Espacio entre campos */
+  margin-bottom: 45px; /* Espacio entre campos */
 }
 
 .login-container {

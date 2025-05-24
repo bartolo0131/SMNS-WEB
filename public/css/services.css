@@ -1,73 +1,24 @@
-body {
+html, body {
     margin: 0;
     padding: 0;
-    height: 80vh; /* Ocupa el 100% de la altura de la ventana de visualización */
-   /* background-image: url('https://images.pexels.com/photos/4386294/pexels-photo-4386294.jpeg'); /* Ruta a tu imagen */
-    background-size: cover; /* Ajusta la imagen para cubrir todo el contenedor */
-    background-position: center; /* Centra la imagen en el contenedor */
-    background-repeat: no-repeat; /* Evita que la imagen se repita */
-}
-
-header, footer {
-  background-color: #6d6e6c;
-  color: #f2d3d0;
-  padding: 10px 0;
-  text-align: center;
-}
-
-header .container,
-footer .container {
-  display: flex;
-  justify-content: space-between;
- text-align: center;
-  padding: 0 20px;
-}
-
-header h1 {
-  margin: 0;
-  font-size: 24px;
-  font-weight: bold;
-}
-
-nav ul {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-}
-
-nav ul li {
-  margin-left: 15px;
-}
-
-nav ul li a {
-  color: white;
-  text-decoration: none;
-  font-size: 12px;
-}
-
-nav ul {
-  list-style: none; /* Elimina los puntos de la lista */
-  padding: 0; /* Elimina el relleno */
-  margin: 0; /* Elimina el margen */
-  display: flex; /* Usa flexbox para la alineación */
-  justify-content: center; /* Centra los elementos de la lista */
-}
-
-nav ul li {
-  margin: 0 20px;
-}
-
-/* Estilos para los navegadores */
-nav ul li a {
-  color: rgb(247, 241, 241);
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 1.5rem; /* Tamaño del texto de los enlaces */
+    min-height: 100vh;
 }
 
 
-header .container {
+body {
+    display: flex;
+    flex-direction: column;
+   /* background-image: url('https://images.pexels.com/photos/4497200/pexels-photo-4497200.jpeg');*/
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    font-family: Arial, sans-serif;
+}
+
+
+
+
+footer.container {
     display: flex;
     justify-content: space-between;
     align-items: center;

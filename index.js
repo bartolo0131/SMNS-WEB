@@ -59,6 +59,23 @@ app.get("/registro", function(req, res)  {
     res.render("registro")
 });
 
+app.get("/about", function(req, res)  {
+    res.render("about")
+});
+
+
+app.get("/services", function(req, res)  {
+    res.render("services")
+});
+
+
+app.get("/vision", function(req, res)  {
+    res.render("vision")
+});
+
+app.get("/index", function(req, res)  {
+    res.render("index")
+});
 
 
 //login 
