@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+   <title>Perfil de Usuario</title>
+   <link rel="stylesheet" href="../css/perfil.css" />
+
+  </head>
+  <body>
+
+      
+ 
+       
+         
+    <%-include ('partials/navegationroles')%>
+      
+            <label for="filtro-estado"><strong>Filtrar por estado:</strong></label>
+        <select id="filtro-estado" onchange="cargarContactos()">
+          <option value="Todos">Todos</option>
+          <option value="Pendiente">Pendiente</option>
+          <option value="En trámite">En trámite</option>
+          <option value="Tramitado">Tramitado</option>
+        </select>
+
+
+
+
+    <div class="container mt-5">
+      <h2>Mensajes de Contacto</h2>
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>id</th>
+            <th>Fecha</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Email</th>
+            <th>Teléfono</th>
+            <th>País de Origen</th>
+            <th>Tipo de Caso</th>
+            <th>Mensaje</th>
+            <th>Observaciones</th>
+            <th>Estado</th>
+            
+          </tr>
+        </thead>
+        <tbody id="tabla-contactos"></tbody>
+      </table>
+    </div>
+
+      <script>
+        function cargarContactos() {
+          const estadoSeleccionado = document.getElementById('filtro-estado').value;
+
+          fetch('/api/contactos')
+            .then(response => response.json())
+            .then(data => {
+              const tabla = document.getElementById('tabla-contactos');
+              tabla.innerHTML = '';
+
+              data
+                .filter(contacto => estadoSeleccionado === 'Todos' || contacto.estado === estadoSeleccionado)
+                .forEach(contacto => {
+                  let color = '';
+                  switch (contacto.estado) {
+                    case 'Pendiente': color = 'red'; break;
+                    case 'En trámite': color = 'orange'; break;
+                    case 'Tramitado': color = 'green'; break;
+                    default: color = 'gray';
+                  }
+
+                  tabla.innerHTML += `
+                    <tr>
+                      <td>${contacto.id}</td> 
+                      <td>${contacto.timestamp}</td> 
+                      <td>${contacto.nombre}</td>
+                      <td>${contacto.apellido}</td>
+                      <td>${contacto.email}</td>
+                      <td>${contacto.telefono}</td>
+                      <td>${contacto.paisorigen}</td>
+                      <td>${contacto.tipocaso}</td>
+                      <td>${contacto.comentario}</td> 
+                      <td>
+                        <textarea id="obs-${contacto.id}">${contacto.observaciones || ''}</textarea>
+                        <button onclick="guardarObservacion(${contacto.id})">Guardar</button>
+                      </td>
+                      <td style="background-color: ${color}; color: white; font-weight: bold;">
+                        <select onchange="actualizarEstado(${contacto.id}, this.value)" style="background-color: ${color}; color: white; font-weight: bold;">
+                          <option value="Pendiente" ${contacto.estado === 'Pendiente' ? 'selected' : ''}>Pendiente</option>
+                          <option value="En trámite" ${contacto.estado === 'En trámite' ? 'selected' : ''}>En trámite</option>
+                          <option value="Tramitado" ${contacto.estado === 'Tramitado' ? 'selected' : ''}>Tramitado</option>
+                        </select>
+                      </td>
+                    </tr>`;
+                });
+            })
+            .catch(err => console.error('Error:', err));
+        }
+
+        function guardarObservacion(id) {
+          const texto = document.getElementById(`obs-${id}`).value;
+
+          fetch('/guardar-observacion', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id, observacion: texto })
+          })
+          .then(res => {
+            if (!res.ok) throw new Error('Error al guardar');
+            return res.text();
+          })
+          .then(msg => alert('Observación guardada'))
+          .catch(err => alert('Error al guardar: ' + err.message));
+        }
+
+        function actualizarEstado(id, nuevoEstado) {
+          fetch('/actualizar-estado', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ id, estado: nuevoEstado })
+          })
+          .then(res => res.text())
+          .then(msg => {
+            console.log(msg);
+            cargarContactos(); // Recargar para aplicar filtro y color
+          })
+          .catch(err => console.error('Error:', err));
+        }
+
+        // Cargar la tabla al iniciar
+        cargarContactos();
+      </script>
+
+
+
+
+
+
+    <footer>
+      <p>&copy; 2024 DG Consulting Services. All rights reserved..</p>
+    </footer>
+
+  </body>
+</html>

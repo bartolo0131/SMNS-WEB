@@ -79,6 +79,10 @@ app.get("/index", function(req, res)  {
     res.render("index")
 });
 
+app.get("/contactosporgestionar", function(req, res)  {
+    res.render("contactosporgestionar")
+});
+
 
 //login 
 
@@ -217,13 +221,43 @@ const datos =  req.body;
 
 });
 
-// llamda de base de conbtatos 
+// llamda de lso registros de contacto
 
 app.get('/api/contactos', (req, res) => {
-  const sql = 'SELECT * FROM contacto';
-  db.query(sql, (err, results) => {
-    if (err) throw err;
-    res.json(results);
+  const sql = 'SELECT * FROM contacts ORDER BY id DESC' ; 
+  conexion.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error al obtener los contactos:', err);
+      return res.status(500).send('Error en el servidor');
+    }
+    res.json(results); 
+  });
+});
+
+//update de observaciones 
+app.post('/guardar-observacion', (req, res) => {
+  const { id, observacion } = req.body;
+  const sql = 'UPDATE contacts SET observaciones = ? WHERE id = ?';
+
+  conexion.query(sql, [observacion, id], (err, result) => {
+    if (err) {
+      console.error('Error al guardar observación:', err);
+      return res.status(500).send('Error al guardar');
+    }
+    res.send('OK');
+  });
+});
+
+app.post('/actualizar-estado', (req, res) => {
+  const { id, estado } = req.body;
+
+  const sql = 'UPDATE contacts SET estado = ? WHERE id = ?';
+  conexion.query(sql, [estado, id], (err, result) => {
+    if (err) {
+      console.error('Error al actualizar el estado:', err);
+      return res.status(500).send('Error en el servidor');
+    }
+    res.send('Estado actualizado correctamente');
   });
 });
 
