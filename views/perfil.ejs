@@ -18,6 +18,39 @@
 
 
 
+<body>
+  <div class="container mt-5">
+    <h2>Mensajes de Contacto</h2>
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Email</th>
+          <th>Mensaje</th>
+        </tr>
+      </thead>
+      <tbody id="tabla-contactos"></tbody>
+    </table>
+  </div>
+
+  <script>
+    fetch('/api/contactos')
+      .then(response => response.json())
+      .then(data => {
+        const tabla = document.getElementById('tabla-contactos');
+        data.forEach(contacto => {
+          tabla.innerHTML += `
+            <tr>
+              <td>${contacto.nombre}</td>
+              <td>${contacto.email}</td>
+              <td>${contacto.comentario}</td>
+            </tr>`;
+        });
+      })
+      .catch(err => console.error('Error:', err));
+  </script>
+</body>
+</html>
 
 
 

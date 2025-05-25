@@ -7,9 +7,11 @@ const bcryptjs = require('bcryptjs');
 const { error, time } = require("console");
 const { name } = require("ejs");
 const { fileURLToPath } = require("url");
+/*const db = require('./db'); // importa la conexión*/
 
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static('public'));
 /*
 app.set('view'join(__dirname,'views'))  
 */
@@ -213,6 +215,16 @@ const datos =  req.body;
         }
         });  
 
+});
+
+// llamda de base de conbtatos 
+
+app.get('/api/contactos', (req, res) => {
+  const sql = 'SELECT * FROM contacto';
+  db.query(sql, (err, results) => {
+    if (err) throw err;
+    res.json(results);
+  });
 });
 
 
