@@ -89,6 +89,7 @@ app.get("/cuentas", function(req, res)  {
 
 
 
+
 //login 
 
 app.post('/login', async (req, res) => {
@@ -263,6 +264,20 @@ app.post('/actualizar-estado', (req, res) => {
       return res.status(500).send('Error en el servidor');
     }
     res.send('Estado actualizado correctamente');
+  });
+});
+
+//cuentas de usuario
+
+app.get('/api/personas', (req, res) => {
+  const sql = 'SELECT * FROM persona ORDER BY id DESC' ; 
+  conexion.query(sql, (err, results) => {
+    if (err) {
+      console.error('Error al obtener los contactos:', err);
+
+      return res.status(500).send('Error en el servidor');
+    }
+    res.json(results); 
   });
 });
 
