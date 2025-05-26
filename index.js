@@ -83,6 +83,11 @@ app.get("/contactosporgestionar", function(req, res)  {
     res.render("contactosporgestionar")
 });
 
+app.get("/cuentas", function(req, res)  {
+    res.render("cuentas")
+});
+
+
 
 //login 
 
