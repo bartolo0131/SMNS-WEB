@@ -30,21 +30,26 @@
   
   
 
-      <h2>Accounts</h2>
-      <table class="table table-bordered">
-        <thead>
-          <tr>
-            <th>id</th>
+<div class="contenedor-tabla">
+  <h2>Accounts</h2> 
 
-            <th>Nombre</th>
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Id</th>
+        <th>Nombre</th>
+        <th>Apellido</th>
+        <th>Correo</th>
+        <th>Telefono</th>
+        <th>Pais de Origen</th>
+      </tr>
+    </thead>
+    <tbody id="tabla-contactos"></tbody>
+  </table>
 
-          </tr>
-        </thead>
-        <tbody id="tabla-contactos"></tbody>
-          <div id="paginacion" style="text-align: center; margin-top: 20px;"></div>
+  <div id="paginacion" style="text-align: center; margin-top: 20px;"></div>
+</div>
 
-        </tbody>  
-      </table>
 
 
 
@@ -54,7 +59,7 @@
 <script>
   let contactos = [];
   let paginaActual = 1;
-  const registrosPorPagina = 10;
+  const registrosPorPagina = 15;
 
   function cargarContactos() {
     fetch('/api/personas')
@@ -80,6 +85,10 @@
         <tr>
           <td>${contacto.id}</td>
           <td>${contacto.nombre}</td>
+          <td>${contacto.apellido}</td>
+          <td>${contacto.correo}</td>
+          <td>${contacto.telefono}</td>
+          <td>${contacto.pais}</td>
         </tr>`;
     });
 
