@@ -2,116 +2,118 @@
 <html lang="es">
   <head>
     <meta charset="UTF-8" />
-   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-   <title>Perfil de Usuario</title>
-   <link rel="stylesheet" href="../css/cargarcontacto.css" />
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Perfil de Usuario</title>
+    <link rel="stylesheet" href="../css/cargarcontacto.css" />
   </head>
   <body>
-
-      
- 
-       
-         
     <%-include ('partials/navegationroles')%>
       
-        <label for="filtro-estado"><strong>Filtrar por estado:</strong></label>
-        <div class="col-md-4"> 
-        <select id="filtro-estado" onchange="cargarContactos()">
-          <option value="Todos">Todos</option>
-          <option value="Pendiente">En trámite</option>
-          <option value="En trámite">pediente documento </option>
-          <option value="Tramitado">finalizado</option>
-        </select>
-        </div>  
-        
+    <div class="col-md-4">
+      <label for="buscador"><strong>Buscar:</strong></label>
+      <input type="text" id="buscador" placeholder="Buscar en todos los campos..." onkeyup="filtrarTabla()">
+    </div>
 
+    <div class="contenedor-tabla">
+      <h2>Usuarios</h2> 
 
-  
-  
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+            <th>Correo</th>
+            <th>Telefono</th>
+            <th>Pais de Origen</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-contactos"></tbody>
+      </table>
 
-<div class="contenedor-tabla">
-  <h2>Accounts</h2> 
-
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>Id</th>
-        <th>Nombre</th>
-        <th>Apellido</th>
-        <th>Correo</th>
-        <th>Telefono</th>
-        <th>Pais de Origen</th>
-      </tr>
-    </thead>
-    <tbody id="tabla-contactos"></tbody>
-  </table>
-
-  <div id="paginacion" style="text-align: center; margin-top: 20px;"></div>
-</div>
-
-
-
+      <div id="paginacion" style="text-align: center; margin-top: 20px;"></div>
+    </div>
 
     <footer>
       <p>&copy; 2024 DG Consulting Services. All rights reserved</p>
     </footer>
-<script>
-  let contactos = [];
-  let paginaActual = 1;
-  const registrosPorPagina = 15;
 
-  function cargarContactos() {
-    fetch('/api/personas')
-      .then(res => res.json())
-      .then(data => {
-        contactos = data;
+    <script>
+      // Variables globales
+      let contactos = [];
+      let contactosFiltrados = [];
+      let paginaActual = 1;
+      const registrosPorPagina = 15;
+
+      // Función para cargar los contactos inicialmente
+      function cargarContactos() {
+        fetch('/api/personas')
+          .then(res => res.json())
+          .then(data => {
+            contactos = data;
+            contactosFiltrados = [...contactos]; // Copia para filtrar
+            mostrarPagina(1);
+            mostrarPaginacion();
+          })
+          .catch(err => console.error('Error al cargar:', err));
+      }
+
+      // Función de filtrado
+      function filtrarTabla() {
+        const textoBusqueda = document.getElementById('buscador').value.toLowerCase();
+        
+        if (textoBusqueda === '') {
+          contactosFiltrados = [...contactos];
+        } else {
+          contactosFiltrados = contactos.filter(contacto => 
+            Object.values(contacto).some(valor => 
+              String(valor).toLowerCase().includes(textoBusqueda)
+            )
+          );
+        }
+        
         mostrarPagina(1);
         mostrarPaginacion();
-      })
-      .catch(err => console.error('Error al cargar:', err));
-  }
+      }
 
-  function mostrarPagina(pagina) {
-    paginaActual = pagina;
-    const inicio = (pagina - 1) * registrosPorPagina;
-    const fin = inicio + registrosPorPagina;
-    const visibles = contactos.slice(inicio, fin);
+      // Función para mostrar una página específica
+      function mostrarPagina(pagina) {
+        paginaActual = pagina;
+        const inicio = (pagina - 1) * registrosPorPagina;
+        const fin = inicio + registrosPorPagina;
+        const visibles = contactosFiltrados.slice(inicio, fin);
 
-    const tabla = document.getElementById('tabla-contactos');
-    tabla.innerHTML = '';
-    visibles.forEach(contacto => {
-      tabla.innerHTML += `
-        <tr>
-          <td>${contacto.id}</td>
-          <td>${contacto.nombre}</td>
-          <td>${contacto.apellido}</td>
-          <td>${contacto.correo}</td>
-          <td>${contacto.telefono}</td>
-          <td>${contacto.pais}</td>
-        </tr>`;
-    });
+        const tabla = document.getElementById('tabla-contactos');
+        tabla.innerHTML = '';
+        visibles.forEach(contacto => {
+          tabla.innerHTML += `
+            <tr>
+              <td>${contacto.id}</td>
+              <td>${contacto.nombre}</td>
+              <td>${contacto.apellido}</td>
+              <td>${contacto.correo}</td>
+              <td>${contacto.telefono}</td>
+              <td>${contacto.pais}</td>
+            </tr>`;
+        });
+      }
 
-    mostrarPaginacion();
-  }
+      // Función para mostrar la paginación
+      function mostrarPaginacion() {
+        const totalPaginas = Math.ceil(contactosFiltrados.length / registrosPorPagina);
+        const contenedor = document.getElementById('paginacion');
+        contenedor.innerHTML = '';
 
-  function mostrarPaginacion() {
-    const totalPaginas = Math.ceil(contactos.length / registrosPorPagina);
-    const contenedor = document.getElementById('paginacion');
-    contenedor.innerHTML = '';
+        for (let i = 1; i <= totalPaginas; i++) {
+          contenedor.innerHTML += `
+            <button class="${i === paginaActual ? 'active' : ''}" onclick="mostrarPagina(${i})">
+              ${i}
+            </button>`;
+        }
+      }
 
-    for (let i = 1; i <= totalPaginas; i++) {
-      contenedor.innerHTML += `
-        <button class="${i === paginaActual ? 'active' : ''}" onclick="mostrarPagina(${i})">
-          ${i}
-        </button>`;
-    }
-  }
-
-  // Carga al inicio
-  cargarContactos();
-</script>
-  
-
+      // Cargar contactos al iniciar la página
+      document.addEventListener('DOMContentLoaded', cargarContactos);
+    </script>
   </body>
 </html>
