@@ -43,6 +43,15 @@ app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 app.use(express.urlencoded({ extended: true }));
 
+app.use((req, res, next) => {
+  const originalRender = res.render;
+  res.render = function(view, options, callback) {
+    console.log(`Renderizando ${view} con datos:`, options);
+    originalRender.call(this, view, options, callback);
+  };
+  next();
+});
+
 //renderisamos las vistas 
 
 app.get("/contacto", function(req, res) {
@@ -87,6 +96,9 @@ app.get("/cuentas", function(req, res)  {
     res.render("cuentas")
 });
 
+app.get("/detallecontacto", function(req, res) {
+    res.render("detallecontacto");
+});
 
 
 
@@ -121,14 +133,14 @@ app.post('/login', async (req, res) => {
 
         // Redirigir según rol
         switch (results[0].id_rol) {
-          case 5: // Ejemplo: administrador
+          case 5: //  administrador
             res.redirect('/perfil');
             break;
-          case 2: // Ejemplo: usuario estándar
+          case 2: 
             res.redirect('/registro');
             break;
           default:
-            res.redirect('/contacto'); // Página por defecto
+            res.redirect('/contacto'); 
         }
       }
     });
@@ -279,6 +291,32 @@ app.get('/api/personas', (req, res) => {
     }
     res.json(results); 
   });
+});
+
+//detalle de contacto por id
+
+
+app.get('/api/personas/:id', (req, res) => {
+    const id = req.params.id;
+    
+    // Validar que el ID sea un número
+    if (isNaN(id)) {
+        return res.status(400).json({ error: 'ID no válido' });
+    }
+
+    const sql = 'SELECT * FROM persona a left join usuarios b on a.id = b.idusuarios WHERE id = ?';
+    conexion.query(sql, [id], (err, results) => {
+        if (err) {
+            console.error('Error al obtener el contacto:', err);
+            return res.status(500).json({ error: 'Error en el servidor' });
+        }
+        
+        if (results.length === 0) {
+            return res.status(404).json({ error: 'Contacto no encontrado' });
+        }
+        
+        res.json(results[0]);
+    });
 });
 
 
