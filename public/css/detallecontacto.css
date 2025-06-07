@@ -1,0 +1,129 @@
+    /* Contenedor principal */
+    .contenedor-detalle {
+        max-width: 1200px;
+        margin: 20px auto;
+        padding: 20px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    
+    /* Información del contacto */
+    .info-contacto {
+        margin-bottom: 30px;
+        padding: 20px;
+        background: #8291a1;
+        border-radius: 6px;
+        border-left: 4px solid #83987c;
+    }
+    
+    /* Contenedor de la tabla */
+    .contenedor-tabla {
+        margin-top: 30px;
+    }
+    
+    .contenedor-tabla h3 {
+        margin-bottom: 15px;
+        color: #1d252c;
+        font-size: 1.2em;
+    }
+    
+    /* Contenedor con scroll */
+    .tabla-container {
+        max-height: 400px;
+        overflow-y: auto;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+    
+    /* Estilos de la tabla */
+    .tabla-casos {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9em;
+    }
+    
+    .tabla-casos th {
+        position: sticky;
+        top: 0;
+        background-color: #283035;
+        color: white;
+        padding: 12px 15px;
+        text-align: left;
+    }
+    
+    .tabla-casos td {
+        padding: 10px 15px;
+        border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .tabla-casos tr:nth-child(even) {
+        background-color: #f8f9fa;
+    }
+    
+    .tabla-casos tr:hover {
+        background-color: #e8f4fc;
+    }
+    
+    /* Mensaje cuando no hay casos */
+    .sin-casos {
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 6px;
+        text-align: center;
+        color: #7f8c8d;
+    }
+    
+    /* Estilos para las fechas */
+    .tabla-casos td:nth-child(3), 
+    .tabla-casos td:nth-child(4) {
+        white-space: nowrap;
+        font-family: monospace;
+        color: #555;
+
+        
+    }
+
+    /* Botón de volver */       /* Estilos para el botón Volver */
+.btn-volver {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    padding: 10px 20px;
+    background-color: #FF7F50; /* Color coral - cálido */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.btn-volver:hover {
+    background-color: #ffda47; /* Tomate - un poco más oscuro al hover */
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+.btn-volver:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 3px rgba(0,0,0,0.2);
+}
+p {
+    font-size: 20px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+     color: #eeeef1;
+}
+
+
+/* Footer siempre al final */
+footer {
+  background-color: #555;
+  color: rgb(244, 234, 234);
+  text-align: center;
+  padding: 15px 0;
+  margin-top: auto;
+}

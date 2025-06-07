@@ -299,12 +299,19 @@ app.get('/api/personas', (req, res) => {
 app.get('/api/personas/:id', (req, res) => {
     const id = req.params.id;
     
-    // Validar que el ID sea un número
     if (isNaN(id)) {
         return res.status(400).json({ error: 'ID no válido' });
     }
 
-    const sql = 'SELECT * FROM persona a left join usuarios b on a.id = b.idusuarios WHERE id = ?';
+    const sql = `
+        SELECT p.*, u.*, c.casonumero, c.tipo_caso, c.fecha_creacion, c.fecha_actualizacion, c.estado, d.rol AS nombre_rol
+        FROM persona p 
+        LEFT JOIN usuarios u ON p.id = u.idusuarios 
+        LEFT JOIN PROCESOS c ON p.id = c.idusuario
+        LEFT JOIN rol d ON d.idrol = u.id_rol
+        WHERE p.id = ?
+    `;
+    
     conexion.query(sql, [id], (err, results) => {
         if (err) {
             console.error('Error al obtener el contacto:', err);
@@ -315,11 +322,31 @@ app.get('/api/personas/:id', (req, res) => {
             return res.status(404).json({ error: 'Contacto no encontrado' });
         }
         
-        res.json(results[0]);
+        // Organizar los datos
+        const response = {
+            id: results[0].id,
+            nombre: results[0].nombre,
+            apellido: results[0].apellido,
+            login: results[0].login,
+            id_rol: results[0].id_rol,
+            nombre_rol: results[0].nombre_rol || 'No especificado',
+            correo: results[0].correo,
+            telefono: results[0].telefono,
+            pais: results[0].pais,
+            casos: results
+                .filter(row => row.casonumero !== null)
+                .map(row => ({
+                    numero: row.casonumero,
+                    tipo: row.tipo_caso || 'No especificado',
+                    fecha_creacion: row.fecha_creacion ? (row.fecha_creacion) : 'No especificada',
+                    fecha_actualizacion: row.fecha_actualizacion ? (row.fecha_actualizacion) : 'No actualizado',
+                    estado: row.estado || 'No especificado'
+                }))
+        };
+        
+        res.json(response);
     });
 });
-
-
 
 
 

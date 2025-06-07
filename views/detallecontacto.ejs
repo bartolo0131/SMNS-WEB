@@ -4,14 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalle de Contacto</title>
+    <link rel="stylesheet" href="../css/detallecontacto.css">
     
 </head>
 <body>
     <%-include ('partials/navegationroles')%>
     
     <div class="contenedor-detalle">
-        <h2>Detalle del Contacto</h2>
-        
+        <h2>Detalle de Contacto</h2>
+        <p>Para ver los detalles de cuenta de un contacto, por favor selecciona un cuenta de la lista.</p>
+
         <div id="detalle-contacto">
             <!-- Los datos se cargarán aquí con JavaScript -->
             <p>Cargando información...</p>
@@ -20,41 +22,13 @@
         <button onclick="window.history.back()" class="btn-volver">Volver</button>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Obtener el ID de la URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const idContacto = urlParams.get('id');
-            
-            if (idContacto) {
-                fetch(`/api/personas/${idContacto}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.error) {
-                            document.getElementById('detalle-contacto').innerHTML = 
-                                `<p class="error">${data.error}</p>`;
-                        } else {
-                            document.getElementById('detalle-contacto').innerHTML = `
-                               
-                                <p><strong>Nombre:</strong> ${data.nombre} ${data.apellido}</p>
-                    
-                                <p><strong>Correo:</strong> ${data.correo}</p>
-                                <p><strong>Teléfono:</strong> ${data.telefono}</p>
-                                <p><strong>País:</strong> ${data.pais}</p>
-                                <!-- Agrega más campos según necesites -->
-                            `;
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                        document.getElementById('detalle-contacto').innerHTML = 
-                            '<p class="error">Error al cargar los datos del contacto</p>';
-                    });
-            } else {
-                document.getElementById('detalle-contacto').innerHTML = 
-                    '<p class="error">No se proporcionó un ID de contacto</p>';
-            }
-        });
-    </script>
+        <footer>
+      <p>&copy; 2024 DG Consulting Services. All rights reserved</p>
+    </footer>
+
+<script src="./script/detallecontacto.js"></script>
+
+
+
 </body>
 </html>
