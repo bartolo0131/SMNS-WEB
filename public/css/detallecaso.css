@@ -1,0 +1,245 @@
+/* Estilos generales */
+body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 0;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+.contenedor-detalle {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 5px;
+}
+
+/* Estilos para el submenú */
+.submenu {
+    background-color: #343a40;
+    padding: 10px 0;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.submenu ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.submenu li {
+    margin: 0 15px;
+}
+
+.submenu a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.submenu a:hover {
+    background-color: #495057;
+}
+
+.submenu a.active {
+    background-color: #007bff;
+}
+
+.submenu a i {
+    margin-right: 8px;
+}
+
+.error {
+    color: #d9534f;
+    font-weight: bold;
+}
+
+.sin-casos {
+    color: #777;
+    font-style: italic;
+}
+
+.contenedor-tabla {
+    margin-top: 20px;
+    overflow-x: auto;
+}
+
+.tabla-casos {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+.tabla-casos th, .tabla-casos td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+.tabla-casos th {
+    background-color: #f2f2f2;
+}
+
+.btn-volver {
+    margin-top: 20px;
+    padding: 8px 15px;
+    background-color: #6c757d;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-volver:hover {
+    background-color: #5a6268;
+}
+
+/* Sección de observaciones */
+.seccion-observaciones {
+    margin-top: 30px;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 5px;
+    border: 1px solid #dee2e6;
+}
+
+.observaciones-lista {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+    padding: 10px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.observacion-item {
+    padding: 10px;
+    margin-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+.observacion-item:last-child {
+    border-bottom: none;
+}
+
+.observacion-fecha {
+    font-size: 0.8em;
+    color: #6c757d;
+}
+
+.observacion-usuario {
+    font-weight: bold;
+    color: #007bff;
+}
+
+/* Formulario de comentarios */
+.formulario-comentario {
+    margin-top: 20px;
+}
+
+.formulario-comentario textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    min-height: 100px;
+    margin-bottom: 10px;
+    resize: vertical;
+}
+
+.btn-enviar {
+    padding: 8px 15px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-enviar:hover {
+    background-color: #218838;
+}
+
+.btn-enviar:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+/* Footer */
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #343a40;
+    color: white;
+}
+
+/* Alertas */
+.alerta {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 5px;
+    color: white;
+    z-index: 1000;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+.alerta.error {
+    background-color: #d9534f;
+}
+
+.alerta.success {
+    background-color: #5cb85c;
+}
+
+/* Selector de estado */
+.selector-estado {
+    margin: 15px 0;
+}
+
+.selector-estado select {
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+.badge-estado {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.badge-pendiente {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-en-tramite {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.badge-tramitado {
+    background-color: #28a745;
+    color: white;
+}

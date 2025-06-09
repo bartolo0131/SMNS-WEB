@@ -118,12 +118,18 @@ p {
      color: #eeeef1;
 }
 
+.main-content {
+    flex: 1 0 auto;
+    padding: 20px;
+}
 
 /* Footer siempre al final */
-footer {
-  background-color: #555;
-  color: rgb(244, 234, 234);
-  text-align: center;
-  padding: 15px 0;
-  margin-top: auto;
+ footer {
+    flex-shrink: 0;
+    background-color: #555;
+    color: rgb(244, 234, 234);
+    text-align: center;
+    padding: 15px 0;
+    width: 100%;
 }
+        

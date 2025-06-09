@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- ... otros meta tags ... -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/detallecaso.css">
+</head>
+<body>
+    <%-include ('partials/navegationroles') %>
+
+  <div class="submenu">
+    <ul>
+        <li><a href="#" id="link-casos" class="active"><i class="fas fa-folder-open"></i> Casos
+        <li><a href="/citas"><i class="fas fa-calendar-alt"></i> Citas Pendientes</a></li>
+        <li><a href="/cuenta"><i class="fas fa-user-cog"></i>Costos</a></li>
+        <li><a href="/reportes"><i class="fas fa-chart-bar"></i> Reportes</a></li>
+        <li><a href="/configuracion"><i class="fas fa-cog"></i> Configuración</a></li>
+    </ul>
+</div>
+    
+    <div class="contenedor-detalle">
+        <h2>Detalle de Caso</h2>
+        
+        <div id="detalle-contacto">
+            <p>Cargando información del caso...</p>
+        </div>
+        
+        <!-- Selector de Estado -->
+        <div class="selector-estado" id="selector-estado-container" style="display: none;">
+            <h3>Cambiar Estado del Caso</h3>
+            <select id="selector-estado" class="form-control">
+                <option value="Pendiente">Pendiente</option>
+                <option value="En trámite">En trámite</option>
+                <option value="Tramitado">Tramitado</option>
+            </select>
+            <button id="btn-cambiar-estado" class="btn-enviar" style="margin-top: 10px;">Actualizar Estado</button>
+            <div id="estado-actual" style="margin-top: 10px;"></div>
+        </div>
+        
+        <div class="seccion-observaciones">
+            <h3>Observaciones del Caso</h3>
+            <div id="observaciones-lista" class="observaciones-lista">
+                <p>Cargando observaciones...</p>
+            </div>
+            
+            <div class="formulario-comentario">
+                <h4>Agregar nueva observación</h4>
+                <form id="form-nueva-observacion">
+                    <textarea id="nueva-observacion" placeholder="Escribe tu observación aquí..." required></textarea>
+                    <button type="submit" class="btn-enviar">Enviar Observación</button>
+                </form>
+            </div>
+        </div>
+        
+        <button onclick="window.history.back()" class="btn-volver">Volver</button>
+    </div>
+
+    
+
+    <footer>
+        <p>&copy; 2024 DG Consulting Services. Todos los derechos reservados</p>
+    </footer>
+
+    <script src="./script/detalle-caso.js"></script>
+</body>
+</html>
