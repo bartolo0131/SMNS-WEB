@@ -160,16 +160,17 @@
                             <thead>
                                 <tr>
                                     <th>Tipo</th>
-                                    <th>Estado</th>
                                     <th>Fecha Creación</th>
+                                    <th>fecha ultima Gestion</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 ${data.casos.map(caso => `
                                     <tr>
                                         <td>${caso.tipo || 'N/A'}</td>
-                                        <td>${caso.estado || 'N/A'}</td>
+                                       
                                         <td>${caso.fecha_creacion ? new Date(caso.fecha_creacion).toLocaleDateString() : 'N/A'}</td>
+                                        <td>${caso.fecha_actualizacion ? new Date(caso.fecha_actualizacion).toLocaleDateString() : 'N/A'}</td>
                                     </tr>
                                 `).join('')}
                             </tbody>

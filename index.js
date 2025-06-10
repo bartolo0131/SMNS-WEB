@@ -106,6 +106,10 @@ app.get("/detalle-caso", function(req, res) {
     res.render("detalle-caso");
 });
 
+app.get("/crear_caso", function(req, res) {
+    res.render("crear_caso");
+});
+
 
 
 //login 
@@ -612,8 +616,90 @@ app.put('/api/procesos/:casonumero/estado', async (req, res) => {
 });
 
 
+router.get('/api/personas/search', async (req, res) => {
+    const { q: searchTerm } = req.query;
+    
+    // Validación mejorada
+    if (!searchTerm || typeof searchTerm !== 'string' || searchTerm.trim().length < 3) {
+        return res.status(400).json({ 
+            success: false,
+            error: 'Debe proporcionar al menos 3 caracteres para la búsqueda',
+            code: 'SEARCH_TERM_TOO_SHORT'
+        });
+    }
 
+    // Sanitización del término
+    const sanitizedTerm = searchTerm.trim().replace(/[%_]/g, '\\$&');
+    const likeTerm = `%${sanitizedTerm}%`;
 
+    try {
+        // Verificar conexión a la base de datos
+        await pool.query('SELECT 1');
+        
+        // Consulta optimizada
+        const [personas] = await pool.query(`
+            SELECT 
+                id, 
+                CONCAT(nombre, ' ', apellido) AS nombre_completo,
+                nombre,
+                apellido,
+                tipo_documento, 
+                numero_documento,
+                telefono,
+                email
+            FROM personas 
+            WHERE 
+                nombre LIKE ? 
+                OR apellido LIKE ? 
+                OR numero_documento LIKE ?
+            ORDER BY nombre, apellido
+            LIMIT 20
+        `, [likeTerm, likeTerm, likeTerm]);
+
+        // Formatear respuesta para el frontend
+        const formattedResults = personas.map(p => ({
+            id: p.id,
+            nombre: p.nombre,
+            apellido: p.apellido,
+            nombre_completo: p.nombre_completo,
+            tipo_documento: p.tipo_documento,
+            numero_documento: p.numero_documento,
+            telefono: p.telefono,
+            email: p.email
+        }));
+
+        if (formattedResults.length === 0) {
+            return res.status(404).json({ 
+                success: false,
+                message: 'No se encontraron personas con ese criterio',
+                code: 'NO_RESULTS_FOUND'
+            });
+        }
+
+        res.json(formattedResults);
+
+    } catch (error) {
+        console.error('Error en búsqueda de personas:', error);
+        
+        const errorResponse = {
+            success: false,
+            error: 'Error interno del servidor al buscar personas',
+            code: 'INTERNAL_SERVER_ERROR'
+        };
+
+        if (process.env.NODE_ENV === 'development') {
+            errorResponse.details = {
+                message: error.message,
+                sqlError: error.sqlMessage,
+                stack: error.stack
+            };
+        }
+
+        res.status(500).json(errorResponse);
+    }
+});
+
+module.exports = router;
 
 app.listen(3000, () => {
   console.log('Servidor corriendo en http://localhost:3000');
