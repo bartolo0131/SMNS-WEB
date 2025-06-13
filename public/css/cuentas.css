@@ -1,0 +1,140 @@
+
+
+html, body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+body {
+  display: flex;
+  flex-direction: column;
+   /* background-image: url('https://images.pexels.com/photos/4497200/pexels-photo-4497200.jpeg');*/
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  font-family: Arial, sans-serif;
+}
+
+/* Contenedor del buscador */
+.col-md-4 {
+  margin: 20px 0;
+  padding:  15px;
+}
+
+/* Estilo para la etiqueta */
+.col-md-4 label {
+  margin-bottom: 8px;
+  font-size: 26px;
+  color: #3f4448;
+}
+
+
+/* Estilo para el input de búsqueda */
+#buscador {
+  width: 70%;
+  padding: 12px 20px;
+  padding-left: 40px;
+  border: 2px solid #3d3939;
+  border-radius: 25px;
+  font-size: 14px;
+  background-color: #fff;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%23757575" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>');
+  background-repeat: no-repeat;
+  background-position: 15px center;
+  background-size: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+/* CSS para la paginación (actualizado) */
+#paginacion {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 30px 0;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+#paginacion button {
+  padding: 8px 14px;
+  border: 1px solid #e0e0e0;
+  background-color: #fff;
+  color: #4a90e2;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  min-width: 36px;
+}
+
+#paginacion button.active-page {
+  background-color: #4a90e2;
+  color: white;
+  border-color: #4a90e2;
+}
+
+#paginacion button:hover:not(.active-page) {
+  background-color: #f0f6ff;
+}
+
+
+
+.contenedor-tabla {
+  width: 100%;
+  max-width: 1300px; 
+  margin: 20px auto;
+  padding: 20px;
+  background-color: #b5b7b5;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+
+.contenedor-tabla h2 {
+  color: #2c3e50;
+  margin-bottom: 10px;
+  padding-bottom: 5px;
+ 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Estilos para el pie de página */
+footer {
+  background-color: rgba(0, 0, 0, 0.7);
+  color: rgb(207, 36, 36);
+  text-align: center;
+  padding: 10px 20px;
+  margin-top: auto;  
+}
+
+p {
+  font-size: 20px;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: #eeeef1;
+}
+

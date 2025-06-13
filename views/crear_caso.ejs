@@ -3,64 +3,191 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Formulario de Contacto</title>
-    <link rel="stylesheet" href="../css/contacto.css">
+    <title>Formulario de Procesos</title>
+    <link rel="stylesheet" href="../css/procesos.css">
+    <style>
+        /* Estilos mejorados para validación */
+        .error-message {
+            color: #dc3545;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        .is-invalid {
+            border-color: #dc3545 !important;
+        }
+        
+        .was-validated .form-control:invalid,
+        .was-validated .form-select:invalid {
+            border-color: #dc3545;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(0.375em + 0.1875rem) center;
+            background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+        }
+        
+        .was-validated .form-control:valid,
+        .was-validated .form-select:valid {
+            border-color: #198754;
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right calc(0.375em + 0.1875rem) center;
+            background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+        }
+    </style>
 </head>
 <body>
- <%-include ('partials/navegationroles')%>
+    <%-include ('partials/navegationroles')%>
 
+    <div class="formularios-container">
+        <form id="formProcesos" class="needs-validation" novalidate>
+            <div class="form-container">
+                <h3>Información del Caso</h3>
+                
+                <div class="mb-3">
+                    <label for="tipo_caso" class="form-label">Tipo de caso *</label>
+                    <select class="form-select" id="tipo_caso" name="tipo_caso" required>
+                        <option value="" selected disabled>Seleccione...</option>
+                        <option value="visado de trabajo">Visado de trabajo</option>
+                        <option value="residencia permanente">Residencia permanente</option>
+                        <option value="visado de estudiante">Visado de estudiante</option>
+                        <option value="visado de turista">Visado de turista</option>
+                        <option value="refugio humanitario">Refugio humanitario</option>
+                        <option value="Audiencia de migracion">Audiencia de migración</option>
+                        <option value="Visa de trabajo estacional">Visa de trabajo estacional</option>
+                        <option value="Ayuda para la repatriacion">Ayuda para la repatriación</option>
+                    </select>
+                    <div class="invalid-feedback">Por favor seleccione un tipo de caso</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="area_practica" class="form-label">Área práctica *</label>
+                    <select class="form-select" id="area_practica" name="area_practica" required>
+                        <option value="" selected disabled>Seleccione...</option>
+                        <option value="ley civil">Ley civil</option>
+                        <option value="ley criminal">Ley criminal</option>
+                        <option value="laboral">Laboral</option>
+                        <option value="otros">Otros</option>
+                    </select>
+                    <div class="invalid-feedback">Por favor seleccione un área práctica</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="estado" class="form-label">Estado *</label>
+                    <select class="form-select" id="estado" name="estado" required>
+                        <option value="" selected disabled>Seleccione...</option>
+                        <option value="Pendiente por pago">Pendiente por pago</option>
+                        <option value="Pendiente por Documentos inicial">Pendiente por Documentos inicial</option>
+                        <option value="abierto">Abierto</option>
+                    </select>
+                    <div class="invalid-feedback">Por favor seleccione un estado</div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="fecha_creacion" class="form-label">Fecha de Creación *</label>
+                    <input type="datetime-local" class="form-control" id="fecha_creacion" name="fecha_creacion" required>
+                    <div class="invalid-feedback">Por favor ingrese una fecha válida</div>
+                </div>
 
-    
-  <div class="form-container" style="position: relative;">
-    <form action="/contactar" method="post" id="formcontacto">
-            <input type="text" class="form-control" id="Tipo_caso" name="tipo-caso" placeholder="Ingrese el tipo de caso" required>
-            <input type="text" class="form-control" id="apellido" name="apellido" placeholder="Last name" required>
-            <input type="email" class="form-control" id="correo" name="correo" placeholder="Email to receive information" required>
-            <input type="tel" class="form-control" id="telefono" name="telefono" placeholder="Phone number" required>
-            <input type="text" class="form-control" id="paisorigen" name="paisorigen" placeholder="Country of origin">
-            <select class="form-select" id="tipocaso" name="tipocaso">
-                <option selected disabled>Area of ​​interest</option>
-                <option>Civil Law</option>
-                <option>Criminal law</option>
-                <option>Labor Law</option>
-                <option>Others</option>
-            </select>
-            <textarea class="form-select" id="comentario" name="comentario" placeholder="Descripcion de del caso del cliente ?"></textarea>
-            
-           
-    
+                       <div class="mb-3">
+                    <label for="observaciones" class="form-label">Observaciones *</label>
+                    <textarea class="form-control" id="observaciones" name="observaciones" rows="5" required></textarea>
+                    <div class="invalid-feedback">Por favor ingrese las observaciones del caso</div>
+                </div>
+                
+            </div>
 
-            
+            <div class="form-container">
+                <h3>Detalles Adicionales</h3>
+                
+                <div class="mb-3">
+                    <label for="observaciones" class="form-label">Observaciones *</label>
+                    <textarea class="form-control" id="observaciones" name="observaciones" rows="5" required></textarea>
+                    <div class="invalid-feedback">Por favor ingrese las observaciones del caso</div>
+                </div>
+            </div>
 
-            <button type="submit" class="btn btn-success">Send</button>  
+            <div class="btn-container">
+                <button type="submit" class="btn btn-success">Enviar</button>
+            </div>
         </form>
+    </div>
 
-
-     <% if (typeof mensaje !== 'undefined') { %>
-      <div id="mensajeFlotante" class="mensaje-flotante">
+    <% if (typeof mensaje !== 'undefined') { %>
+    <div id="mensajeFlotante" class="mensaje-flotante" style="background-color: <%= tipoMensaje === 'exito' ? '#28a745' : '#dc3545' %>">
         <span id="cerrarMensaje" class="cerrar">&times;</span>
         <p><%= mensaje %></p>
-      </div>
-     <% } %>
-
     </div>
-  </div>
+    <% } %>
 
-     <footer>
+    <footer>
         <p>&copy; 2024 DG Consulting Services. Todos los derechos reservados.</p>
     </footer>
-   
 
     <script>
-    const mensajeFlotante = document.getElementById('mensajeFlotante');
-    const cerrarMensaje = document.getElementById('cerrarMensaje');
-
-    if(cerrarMensaje){
-      cerrarMensaje.onclick = function(){
-        mensajeFlotante.style.display = 'none';
-      }
-    }
-  </script>
-
-  </body>
+        // Validación del formulario
+        (function() {
+            'use strict';
+            
+            const form = document.getElementById('formProcesos');
+            
+            form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                
+                form.classList.add('was-validated');
+                
+                if (form.checkValidity()) {
+                    enviarFormulario();
+                }
+            }, false);
+            
+            // Autocompletar fecha actual
+            document.addEventListener('DOMContentLoaded', function() {
+                const now = new Date();
+                const timezoneOffset = now.getTimezoneOffset() * 60000;
+                const localISOTime = (new Date(now - timezoneOffset)).toISOString().slice(0, 16);
+                document.getElementById('fecha_creacion').value = localISOTime;
+            });
+        })();
+        
+        function enviarFormulario() {
+            const form = document.getElementById('formProcesos');
+            const formData = new FormData(form);
+            
+            fetch('/procesos', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.text();
+                }
+                throw new Error('Error en la red');
+            })
+            .then(() => {
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al enviar el formulario');
+            });
+        }
+        
+        // Cerrar mensaje flotante
+        const cerrarMensaje = document.getElementById('cerrarMensaje');
+        if (cerrarMensaje) {
+            cerrarMensaje.addEventListener('click', function() {
+                document.getElementById('mensajeFlotante').style.display = 'none';
+            });
+            
+            setTimeout(() => {
+                const mensaje = document.getElementById('mensajeFlotante');
+                if (mensaje) mensaje.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
 </html>

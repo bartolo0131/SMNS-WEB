@@ -8,10 +8,12 @@ const { error, time } = require("console");
 const { name } = require("ejs");
 const { fileURLToPath } = require("url");
 const router = express.Router(); 
+const bodyParser = require('body-parser');
 
 /*const db = require('./db'); // importa la conexión*/
 
-
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static('public'));
 /*
@@ -616,88 +618,58 @@ app.put('/api/procesos/:casonumero/estado', async (req, res) => {
 });
 
 
-router.get('/api/personas/search', async (req, res) => {
-    const { q: searchTerm } = req.query;
+
+//Ruta para mostrar el formulario
+app.get('/procesos', (req, res) => {
+    res.render('procesos', { 
+        mensaje: null,
+        tipoMensaje: null,
+        datosFormulario: null 
+    });
+});
+
+// Ruta para procesar el formulario
+app.post('/procesos', (req, res) => {
+    const { tipo_caso, area_practica, estado, observaciones, fecha_creacion } = req.body;
     
-    // Validación mejorada
-    if (!searchTerm || typeof searchTerm !== 'string' || searchTerm.trim().length < 3) {
-        return res.status(400).json({ 
-            success: false,
-            error: 'Debe proporcionar al menos 3 caracteres para la búsqueda',
-            code: 'SEARCH_TERM_TOO_SHORT'
+    // Validación
+    const errores = [];
+    if (!tipo_caso) errores.push('El tipo de caso es requerido');
+    if (!area_practica) errores.push('El área práctica es requerida');
+    if (!estado) errores.push('El estado es requerido');
+    if (!observaciones) errores.push('Las observaciones son requeridas');
+    if (!fecha_creacion) errores.push('La fecha de creación es requerida');
+
+    if (errores.length > 0) {
+        return res.render('procesos', {
+            mensaje: errores.join('<br>'),
+            tipoMensaje: 'error',
+            datosFormulario: req.body // Para mantener los datos ingresados
         });
     }
 
-    // Sanitización del término
-    const sanitizedTerm = searchTerm.trim().replace(/[%_]/g, '\\$&');
-    const likeTerm = `%${sanitizedTerm}%`;
+    // Procesar en BD (ejemplo)
+    const query = "INSERT INTO procesos SET ?";
+    const datos = { tipo_caso, area_practica, estado, observaciones, fecha_creacion };
 
-    try {
-        // Verificar conexión a la base de datos
-        await pool.query('SELECT 1');
-        
-        // Consulta optimizada
-        const [personas] = await pool.query(`
-            SELECT 
-                id, 
-                CONCAT(nombre, ' ', apellido) AS nombre_completo,
-                nombre,
-                apellido,
-                tipo_documento, 
-                numero_documento,
-                telefono,
-                email
-            FROM personas 
-            WHERE 
-                nombre LIKE ? 
-                OR apellido LIKE ? 
-                OR numero_documento LIKE ?
-            ORDER BY nombre, apellido
-            LIMIT 20
-        `, [likeTerm, likeTerm, likeTerm]);
-
-        // Formatear respuesta para el frontend
-        const formattedResults = personas.map(p => ({
-            id: p.id,
-            nombre: p.nombre,
-            apellido: p.apellido,
-            nombre_completo: p.nombre_completo,
-            tipo_documento: p.tipo_documento,
-            numero_documento: p.numero_documento,
-            telefono: p.telefono,
-            email: p.email
-        }));
-
-        if (formattedResults.length === 0) {
-            return res.status(404).json({ 
-                success: false,
-                message: 'No se encontraron personas con ese criterio',
-                code: 'NO_RESULTS_FOUND'
+    conexion.query(query, datos, (error, results) => {
+        if (error) {
+            console.error("Error en BD:", error);
+            return res.render('procesos', {
+                mensaje: 'Error al guardar en la base de datos',
+                tipoMensaje: 'error',
+                datosFormulario: req.body
             });
         }
 
-        res.json(formattedResults);
-
-    } catch (error) {
-        console.error('Error en búsqueda de personas:', error);
-        
-        const errorResponse = {
-            success: false,
-            error: 'Error interno del servidor al buscar personas',
-            code: 'INTERNAL_SERVER_ERROR'
-        };
-
-        if (process.env.NODE_ENV === 'development') {
-            errorResponse.details = {
-                message: error.message,
-                sqlError: error.sqlMessage,
-                stack: error.stack
-            };
-        }
-
-        res.status(500).json(errorResponse);
-    }
+        res.render('procesos', {
+            mensaje: 'Caso registrado exitosamente',
+            tipoMensaje: 'exito',
+            datosFormulario: null
+        });
+    });
 });
+
 
 module.exports = router;
 

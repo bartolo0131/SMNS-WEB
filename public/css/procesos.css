@@ -12,8 +12,18 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     font-family: Arial, sans-serif;
+
 }
 
+.form-container {
+  width: 200%;
+  max-width: 1000px;        /* Ancho máximo */
+  margin: 40px auto;       /* Centrado horizontal (arriba/abajo: 40px) */
+  padding: 30px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Sombra opcional */
+}
 
 
 
@@ -23,8 +33,10 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 100vh;
-    padding: 40px;
+    height: 200vh;
+    padding: 60px;
+      justify-content: center; /* Centra horizontalmente */
+  align-items: center;     /* Centra verticalmente */
 }
 
 
@@ -47,23 +59,38 @@ body {
 }
 .form-container {
     background: rgb(255, 255, 255);
-    padding: 20px;
+    padding: 10px;
     border-radius: 20px;
-    width:600px;
+    width: 700px;
+    
     color: rgb(26, 26, 58); /* color de autorizacion de datos perosnales */
    
 }
 .form-container input, .form-container select, .form-container textarea {
     width: 98%;
-    padding: 10px;
+    padding: 15px;
     margin: 5px 0;
     border: 1px solid #ccc; /* color de los cajones del contacto */
-    border-radius: 10px;
+    border-radius: 15px;
 
 }
 .form-container textarea {
     height: 3px;
+    padding: 10px;
 }
+
+
+#observaciones {
+  width: 98%; /* Ocupa todo el ancho del contenedor */
+  min-height: 220px; /* Altura mínima inicial */
+  padding: 10px;
+  font-family: inherit;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  resize: vertical; /* Permite al usuario ajustar la altura verticalmente */
+}
+
 .form-container button {
     background: rgb(161, 161, 154);
     width: 98%;
@@ -96,21 +123,11 @@ p {
      color: #eeeef1;
 }
 
-#comentario {
-  width: 98%; /* Ocupa todo el ancho del contenedor */
-  min-height: 98px; /* Altura mínima inicial */
-  padding: 10px;
-  font-family: inherit;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 10px;
-  resize: vertical; /* Permite al usuario ajustar la altura verticalmente */
-}
 
 
 
 .form-container {
- position: relative;
+ position: center;
 }
 
 .mensaje-flotante {

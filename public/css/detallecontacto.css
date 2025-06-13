@@ -118,6 +118,17 @@ p {
      color: #eeeef1;
 }
 
+p[detalle] {
+  position: relative;
+  color: #4e545a; /* Gris bootstrap */
+
+  margin: 20px 0;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  font-size: 18px;
+}
+
+
 .main-content {
     flex: 1 0 auto;
     padding: 20px;
