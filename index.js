@@ -9,6 +9,8 @@ const { name } = require("ejs");
 const { fileURLToPath } = require("url");
 const router = express.Router(); 
 const bodyParser = require('body-parser');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' }); // crea una carpeta donde se guardarán los archivos
 
 /*const db = require('./db'); // importa la conexión*/
 
@@ -110,6 +112,10 @@ app.get("/detalle-caso", function(req, res) {
 
 app.get("/crear_caso", function(req, res) {
     res.render("crear_caso");
+});
+
+app.get("/graficas", function(req, res) {
+    res.render("graficas");
 });
 
 
@@ -253,7 +259,7 @@ const datos =  req.body;
 
 // llamda de lso registros de contacto
 
-app.get('/api/contactos', (req, res) => {
+app.get('/api/contactos', (res) => {
   const sql = 'SELECT * FROM contacts ORDER BY id DESC' ; 
   conexion.query(sql, (err, results) => {
     if (err) {
@@ -359,6 +365,24 @@ app.get('/api/personas/:id', (req, res) => {
         res.json(response);
     });
 });
+
+app.get("/api/graficos", (req, res) => {
+  const query = `SELECT * FROM procesos`;
+
+  conexion.query(query, (err, results) => {
+    if (err) {
+      console.error("Error al obtener los datos:", err);
+      return res.status(500).json({ error: "Error en el servidor" });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: "No hay datos para mostrar" });
+    }
+
+    res.json(results);
+  });
+});
+
 
 
 
@@ -619,7 +643,7 @@ app.put('/api/procesos/:casonumero/estado', async (req, res) => {
 
 
 
-//Ruta para mostrar el formulario
+//cRuta para mostrar el formulario
 app.get('/procesos', (req, res) => {
     res.render('procesos', { 
         mensaje: null,
