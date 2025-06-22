@@ -4,10 +4,103 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Formulario de Procesos</title>
-    <link rel="stylesheet" href="../css/procesos.css">
     <style>
-        /* Estilos mejorados para validación */
-        .error-message {
+        /* Estilos principales */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Contenedor de formularios */
+        .formularios-container {
+            display: flex;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        /* Estilos para cada contenedor de formulario */
+        .form-container {
+            flex: 1;
+            min-width: 300px;
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .form-container h3 {
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        /* Estilos para los elementos del formulario */
+        .mb-3 {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #495057;
+        }
+        
+        .form-select, .form-control, textarea {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ced4da;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .form-select:focus, .form-control:focus, textarea:focus {
+            border-color: #80bdff;
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+        
+        /* Contenedor del botón centrado */
+        .btn-center-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .btn-success {
+            padding: 12px 30px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        
+        /* Estilos para validación */
+        .invalid-feedback {
             color: #dc3545;
             font-size: 0.875rem;
             margin-top: 0.25rem;
@@ -17,106 +110,168 @@
             border-color: #dc3545 !important;
         }
         
-        .was-validated .form-control:invalid,
-        .was-validated .form-select:invalid {
-            border-color: #dc3545;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath stroke-linejoin='round' d='M5.8 3.6h.4L6 6.5z'/%3e%3ccircle cx='6' cy='8.2' r='.6' fill='%23dc3545' stroke='none'/%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right calc(0.375em + 0.1875rem) center;
-            background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+        /* Mensaje flotante */
+        .mensaje-flotante {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 400px;
         }
         
-        .was-validated .form-control:valid,
-        .was-validated .form-select:valid {
-            border-color: #198754;
-            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23198754' d='M2.3 6.73L.6 4.53c-.4-1.04.46-1.4 1.1-.8l1.1 1.4 3.4-3.8c.6-.63 1.6-.27 1.2.7l-4 4.6c-.43.5-.8.4-1.1.1z'/%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right calc(0.375em + 0.1875rem) center;
-            background-size: calc(0.75em + 0.375rem) calc(0.75em + 0.375rem);
+        .mensaje-flotante.error {
+            background-color: #dc3545;
+        }
+        
+        .cerrar {
+            cursor: pointer;
+            margin-left: 15px;
+            font-size: 20px;
+            line-height: 1;
+        }
+        
+        /* Estilos para el autocompletado */
+        .autocomplete {
+            position: relative;
+        }
+        
+        .autocomplete-items {
+            position: absolute;
+            border: 1px solid #d4d4d4;
+            border-bottom: none;
+            border-top: none;
+            z-index: 99;
+            top: 100%;
+            left: 0;
+            right: 0;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: white;
+        }
+        
+        .autocomplete-items div {
+            padding: 10px;
+            cursor: pointer;
+            background-color: #fff;
+            border-bottom: 1px solid #d4d4d4;
+        }
+        
+        .autocomplete-items div:hover {
+            background-color: #e9e9e9;
+        }
+        
+        .autocomplete-active {
+            background-color: DodgerBlue !important;
+            color: #ffffff;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .formularios-container {
+                flex-direction: column;
+            }
+            
+            .form-container {
+                min-width: 100%;
+            }
         }
     </style>
 </head>
 <body>
     <%-include ('partials/navegationroles')%>
 
-    <div class="formularios-container">
-        <form id="formProcesos" class="needs-validation" novalidate>
-            <div class="form-container">
-                <h3>Información del Caso</h3>
-                
-                <div class="mb-3">
-                    <label for="tipo_caso" class="form-label">Tipo de caso *</label>
-                    <select class="form-select" id="tipo_caso" name="tipo_caso" required>
-                        <option value="" selected disabled>Seleccione...</option>
-                        <option value="visado de trabajo">Visado de trabajo</option>
-                        <option value="residencia permanente">Residencia permanente</option>
-                        <option value="visado de estudiante">Visado de estudiante</option>
-                        <option value="visado de turista">Visado de turista</option>
-                        <option value="refugio humanitario">Refugio humanitario</option>
-                        <option value="Audiencia de migracion">Audiencia de migración</option>
-                        <option value="Visa de trabajo estacional">Visa de trabajo estacional</option>
-                        <option value="Ayuda para la repatriacion">Ayuda para la repatriación</option>
-                    </select>
-                    <div class="invalid-feedback">Por favor seleccione un tipo de caso</div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="area_practica" class="form-label">Área práctica *</label>
-                    <select class="form-select" id="area_practica" name="area_practica" required>
-                        <option value="" selected disabled>Seleccione...</option>
-                        <option value="ley civil">Ley civil</option>
-                        <option value="ley criminal">Ley criminal</option>
-                        <option value="laboral">Laboral</option>
-                        <option value="otros">Otros</option>
-                    </select>
-                    <div class="invalid-feedback">Por favor seleccione un área práctica</div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="estado" class="form-label">Estado *</label>
-                    <select class="form-select" id="estado" name="estado" required>
-                        <option value="" selected disabled>Seleccione...</option>
-                        <option value="Pendiente por pago">Pendiente por pago</option>
-                        <option value="Pendiente por Documentos inicial">Pendiente por Documentos inicial</option>
-                        <option value="abierto">Abierto</option>
-                    </select>
-                    <div class="invalid-feedback">Por favor seleccione un estado</div>
-                </div>
-                
-                <div class="mb-3">
-                    <label for="fecha_creacion" class="form-label">Fecha de Creación *</label>
-                    <input type="datetime-local" class="form-control" id="fecha_creacion" name="fecha_creacion" required>
-                    <div class="invalid-feedback">Por favor ingrese una fecha válida</div>
+    <div class="main-container">
+        <form id="formProcesos" novalidate>
+            <div class="formularios-container">
+                <!-- Primer formulario -->
+                <div class="form-container">
+                    <h3>Información del Caso</h3>
+                    
+                    <!-- Campo de búsqueda de persona -->
+                    <div class="mb-3 autocomplete">
+                        <label for="buscarPersona" class="form-label">Buscar Persona *</label>
+                        <input type="text" class="form-control" id="buscarPersona" name="buscarPersona" placeholder="Ingrese nombre o documento" required>
+                        <input type="hidden" id="id_persona" name="id_persona">
+                        <div class="invalid-feedback">Por favor seleccione una persona</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="tipo_caso" class="form-label">Tipo de caso *</label>
+                        <select class="form-select" id="tipo_caso" name="tipo_caso" required>
+                            <option value="" selected disabled>Seleccione...</option>
+                            <option value="visado de trabajo">Visado de trabajo</option>
+                            <option value="residencia permanente">Residencia permanente</option>
+                            <option value="visado de estudiante">Visado de estudiante</option>
+                            <option value="visado de turista">Visado de turista</option>
+                            <option value="refugio humanitario">Refugio humanitario</option>
+                            <option value="Audiencia de migracion">Audiencia de migración</option>
+                            <option value="Visa de trabajo estacional">Visa de trabajo estacional</option>
+                            <option value="Ayuda para la repatriacion">Ayuda para la repatriación</option>
+                        </select>
+                        <div class="invalid-feedback">Por favor seleccione un tipo de caso</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="area_practica" class="form-label">Área práctica *</label>
+                        <select class="form-select" id="area_practica" name="area_practica" required>
+                            <option value="" selected disabled>Seleccione...</option>
+                            <option value="ley civil">Ley civil</option>
+                            <option value="ley criminal">Ley criminal</option>
+                            <option value="laboral">Laboral</option>
+                            <option value="otros">Otros</option>
+                        </select>
+                        <div class="invalid-feedback">Por favor seleccione un área práctica</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="estado" class="form-label">Estado *</label>
+                        <select class="form-select" id="estado" name="estado" required>
+                            <option value="" selected disabled>Seleccione...</option>
+                            <option value="Pendiente por pago">Pendiente por pago</option>
+                            <option value="Pendiente por Documentos inicial">Pendiente por Documentos inicial</option>
+                            <option value="abierto">Abierto</option>
+                        </select>
+                        <div class="invalid-feedback">Por favor seleccione un estado</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="fecha_creacion" class="form-label">Fecha de Creación *</label>
+                        <input type="datetime-local" class="form-control" id="fecha_creacion" name="fecha_creacion" required>
+                        <div class="invalid-feedback">Por favor ingrese una fecha válida</div>
+                    </div>
                 </div>
 
-                       <div class="mb-3">
-                    <label for="observaciones" class="form-label">Observaciones *</label>
-                    <textarea class="form-control" id="observaciones" name="observaciones" rows="5" required></textarea>
-                    <div class="invalid-feedback">Por favor ingrese las observaciones del caso</div>
+                <!-- Segundo formulario -->
+                <div class="form-container">
+                    <h3>Detalles Adicionales</h3>
+                    
+                    <div class="mb-3">
+                        <label for="observaciones" class="form-label">Observaciones *</label>
+                        <textarea class="form-control" id="observaciones" name="observaciones" rows="10" required></textarea>
+                        <div class="invalid-feedback">Por favor ingrese las observaciones del caso</div>
+                    </div>
                 </div>
-                
             </div>
 
-            <div class="form-container">
-                <h3>Detalles Adicionales</h3>
-                
-                <div class="mb-3">
-                    <label for="observaciones" class="form-label">Observaciones *</label>
-                    <textarea class="form-control" id="observaciones" name="observaciones" rows="5" required></textarea>
-                    <div class="invalid-feedback">Por favor ingrese las observaciones del caso</div>
-                </div>
-            </div>
-
-            <div class="btn-container">
+            <!-- Botón de envío centrado -->
+            <div class="btn-center-container">
                 <button type="submit" class="btn btn-success">Enviar</button>
             </div>
         </form>
     </div>
 
     <% if (typeof mensaje !== 'undefined') { %>
-    <div id="mensajeFlotante" class="mensaje-flotante" style="background-color: <%= tipoMensaje === 'exito' ? '#28a745' : '#dc3545' %>">
-        <span id="cerrarMensaje" class="cerrar">&times;</span>
+    <div id="mensajeFlotante" class="mensaje-flotante <%= tipoMensaje === 'exito' ? '' : 'error' %>">
         <p><%= mensaje %></p>
+        <span id="cerrarMensaje" class="cerrar">&times;</span>
     </div>
     <% } %>
 
@@ -125,69 +280,174 @@
     </footer>
 
     <script>
-        // Validación del formulario
-        (function() {
-            'use strict';
-            
-            const form = document.getElementById('formProcesos');
-            
-            form.addEventListener('submit', function(event) {
-                if (!form.checkValidity()) {
-                    event.preventDefault();
-                    event.stopPropagation();
+        // Función de autocompletado para buscar personas
+        function autocomplete(inp, hiddenId) {
+            inp.addEventListener("input", function(e) {
+                const val = this.value;
+                if (val.length < 2) {
+                    closeAllLists();
+                    return;
                 }
                 
-                form.classList.add('was-validated');
-                
-                if (form.checkValidity()) {
-                    enviarFormulario();
-                }
-            }, false);
-            
-            // Autocompletar fecha actual
-            document.addEventListener('DOMContentLoaded', function() {
-                const now = new Date();
-                const timezoneOffset = now.getTimezoneOffset() * 60000;
-                const localISOTime = (new Date(now - timezoneOffset)).toISOString().slice(0, 16);
-                document.getElementById('fecha_creacion').value = localISOTime;
+                fetch(`/buscarPersonas?q=${encodeURIComponent(val)}`)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Error en la red');
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        closeAllLists();
+                        
+                        if (!data || data.length === 0) return;
+                        
+                        const autocompleteList = document.createElement("DIV");
+                        autocompleteList.setAttribute("id", this.id + "autocomplete-list");
+                        autocompleteList.setAttribute("class", "autocomplete-items");
+                        this.parentNode.appendChild(autocompleteList);
+                        
+                        data.forEach(persona => {
+                            const item = document.createElement("DIV");
+                            item.innerHTML = `<strong>${persona.nombre || 'Sin nombre'}</strong> - ${persona.documento || 'Sin documento'}`;
+                            item.innerHTML += `<input type='hidden' value='${persona._id || persona.id}'>`;
+                            item.addEventListener("click", function() {
+                                inp.value = `${persona.nombre || 'Sin nombre'} (${persona.documento || 'Sin documento'})`;
+                                document.getElementById(hiddenId).value = persona._id || persona.id;
+                                closeAllLists();
+                            });
+                            autocompleteList.appendChild(item);
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error en la búsqueda:', error);
+                        closeAllLists();
+                    });
             });
-        })();
-        
-        function enviarFormulario() {
-            const form = document.getElementById('formProcesos');
-            const formData = new FormData(form);
             
-            fetch('/procesos', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.text();
+            function closeAllLists(elmnt) {
+                const items = document.getElementsByClassName("autocomplete-items");
+                for (let i = 0; i < items.length; i++) {
+                    if (elmnt != items[i] && elmnt != inp) {
+                        items[i].parentNode.removeChild(items[i]);
+                    }
                 }
-                throw new Error('Error en la red');
-            })
-            .then(() => {
-                window.location.reload();
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Error al enviar el formulario');
+            }
+            
+            document.addEventListener("click", function(e) {
+                closeAllLists(e.target);
             });
         }
         
-        // Cerrar mensaje flotante
-        const cerrarMensaje = document.getElementById('cerrarMensaje');
-        if (cerrarMensaje) {
-            cerrarMensaje.addEventListener('click', function() {
-                document.getElementById('mensajeFlotante').style.display = 'none';
+        // Validación del formulario
+        function validarFormulario() {
+            let isValid = true;
+            const form = document.getElementById('formProcesos');
+            const requiredFields = form.querySelectorAll('[required]');
+            
+            requiredFields.forEach(field => {
+                field.classList.remove('is-invalid');
+                
+                if (!field.value.trim()) {
+                    field.classList.add('is-invalid');
+                    isValid = false;
+                }
+                
+                // Validación especial para el campo de persona
+                if (field.id === 'buscarPersona' && !document.getElementById('id_persona').value) {
+                    field.classList.add('is-invalid');
+                    isValid = false;
+                }
             });
             
+            return isValid;
+        }
+        
+        function mostrarMensaje(texto, tipo) {
+            const mensajeDiv = document.createElement('div');
+            mensajeDiv.className = `mensaje-flotante ${tipo === 'exito' ? '' : 'error'}`;
+            mensajeDiv.innerHTML = `
+                <p>${texto}</p>
+                <span class="cerrar">&times;</span>
+            `;
+            
+            document.body.appendChild(mensajeDiv);
+            
+            // Configurar cierre del mensaje
+            const cerrarBtn = mensajeDiv.querySelector('.cerrar');
+            cerrarBtn.addEventListener('click', () => {
+                mensajeDiv.remove();
+            });
+            
+            // Auto-ocultar después de 5 segundos
             setTimeout(() => {
-                const mensaje = document.getElementById('mensajeFlotante');
-                if (mensaje) mensaje.style.display = 'none';
+                if (document.body.contains(mensajeDiv)) {
+                    mensajeDiv.remove();
+                }
             }, 5000);
         }
+        
+        // Inicialización cuando el DOM está listo
+        document.addEventListener("DOMContentLoaded", function() {
+            // Inicializar autocompletado
+            autocomplete(document.getElementById("buscarPersona"), "id_persona");
+            
+            // Configurar fecha actual
+            const now = new Date();
+            const timezoneOffset = now.getTimezoneOffset() * 60000;
+            const localISOTime = (new Date(now - timezoneOffset)).toISOString().slice(0, 16);
+            document.getElementById('fecha_creacion').value = localISOTime;
+            
+            // Manejar envío del formulario
+            document.getElementById('formProcesos').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                if (!validarFormulario()) {
+                    mostrarMensaje('Por favor complete todos los campos requeridos', 'error');
+                    return;
+                }
+                
+                const formData = new FormData(this);
+                
+                fetch('/procesos', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error en la red');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        mostrarMensaje(data.message || 'Proceso creado exitosamente', 'exito');
+                        setTimeout(() => {
+                            window.location.href = data.redirect || '/casos';
+                        }, 1500);
+                    } else {
+                        mostrarMensaje(data.message || 'Error al crear el proceso', 'error');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    mostrarMensaje('Error al enviar el formulario', 'error');
+                });
+            });
+            
+            // Cerrar mensaje flotante existente si hay
+            const cerrarMensaje = document.getElementById('cerrarMensaje');
+            if (cerrarMensaje) {
+                cerrarMensaje.addEventListener('click', function() {
+                    const mensaje = document.getElementById('mensajeFlotante');
+                    if (mensaje) mensaje.style.display = 'none';
+                });
+                
+                setTimeout(() => {
+                    const mensaje = document.getElementById('mensajeFlotante');
+                    if (mensaje) mensaje.style.display = 'none';
+                }, 5000);
+            }
+        });
     </script>
 </body>
 </html>
