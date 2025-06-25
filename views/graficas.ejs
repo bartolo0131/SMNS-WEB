@@ -1,22 +1,109 @@
 <!DOCTYPE html>
 <html lang="es">
-  <head>
-    <!-- ... otros meta tags ... -->
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
-    <link rel="stylesheet" href="../css/detallecaso.css" />
-  </head>
-  <body>
-    <%-include ('partials/navegationroles') %>
+<head>
+  <meta charset="UTF-8">
+  <title>Gráficos de Casos</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+  <style>
+    .chart-container {
+      width: 80%;
+      margin: 2rem auto;
+      min-height: 400px;
+    }
+    .error-container {
+      padding: 1rem;
+      background-color: #ffebee;
+      border: 1px solid #ffcdd2;
+      border-radius: 4px;
+      color: #c62828;
+    }
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #666;
+    }
+  </style>
+</head>
+<body>
+  <div class="chart-container">
+    <div id="loading" class="loading">Cargando datos...</div>
+    <canvas id="miGrafica"></canvas>
+    <div id="errorContainer" class="error-container" style="display: none;"></div>
+  </div>
 
-    <div id="grafico_container"></div>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const loadingElement = document.getElementById('loading');
+      const canvasElement = document.getElementById('miGrafica');
+      const errorContainer = document.getElementById('errorContainer');
 
-   
-    <footer>
-      <p>&copy; 2024 DG Consulting Services. Todos los derechos reservados</p>
-    </footer>
-    <script src="./script/graficos.js"></script>
-  </body>
+      // Ocultar canvas inicialmente
+      canvasElement.style.display = 'none';
+
+      fetch('/api/datos')
+        .then(async response => {
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Error ${response.status}: ${errorText}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Verificar estructura de datos
+          if (!data.labels || !data.datasets) {
+            throw new Error('Formato de datos incorrecto');
+          }
+
+          // Ocultar loading y mostrar gráfico
+          loadingElement.style.display = 'none';
+          canvasElement.style.display = 'block';
+          errorContainer.style.display = 'none';
+
+          // Crear gráfica
+          new Chart(canvasElement, {
+            type: 'bar',
+            data: data,
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: 'top',
+                },
+                title: {
+                  display: true,
+                  text: 'Distribución de Casos por Tipo y Estado'
+                }
+              },
+              scales: {
+                y: {
+                  beginAtZero: true,
+                  title: {
+                    display: true,
+                    text: 'Cantidad de Casos'
+                  }
+                },
+                x: {
+                  title: {
+                    display: true,
+                    text: 'Tipos de Casos'
+                  }
+                }
+              }
+            }
+          });
+        })
+        .catch(error => {
+          console.error('Error al cargar datos:', error);
+          loadingElement.style.display = 'none';
+          canvasElement.style.display = 'none';
+          errorContainer.style.display = 'block';
+          errorContainer.innerHTML = `
+            <h3>Error al cargar los datos</h3>
+            <p>${error.message}</p>
+            <p>Por favor intente nuevamente más tarde.</p>
+          `;
+        });
+    });
+  </script>
+</body>
 </html>

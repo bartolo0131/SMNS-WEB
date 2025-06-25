@@ -1,59 +1,46 @@
-const express = require('express'); 
+const express = require("express");
+const session = require("express-session");
+const path = require("path");
 const app = express();
 
 
-app.use(express.urlencoded({ extended: false })); 
+// Rutas
+const webRoutes = require("./routes/webRoutes");
+const apiRoutes = require("./routes/apiRoutes");
+
+app.use("/", webRoutes);
+app.use("/api", apiRoutes);
+
+// Configuración
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+
+// Middlewares
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(
+  session({
+    secret: "secreto_seguro",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
-const dotenv = require('dotenv');
-dotenv.config({path:'./env/.env'})
-
-app.use('/resources', express.static('public'));
-app.use('/resources', express.static(__dirname+'/public'))
-
-
-
-//motor de plantillas 
-app.set('view engine', 'ejs');
-
-
-
-
-// invocamos bcrypt
-const bcryptjs= require('bcryptjs')
-
-//variables de seccion
-const session= require('express-session')
-app.use(session({
-    secret:'secret',
-    resave: true,
-    saveUninitialized:true
-}));
-
-//conexion de bd
-
-const connection = require('./db');
-
-//estableciemineto de rutas 
+// Debug de renderizado
+app.use((req, res, next) => {
+  const originalRender = res.render;
+  res.render = function (view, options, callback) {
+    console.log(`Renderizando ${view}`);
+    originalRender.call(this, view, options, callback);
+  };
+  next();
+});
 
 
-    app.get('/loginC', (req, res) => {
-        res.render('loginC');
-    });
 
-   app.get('/registro', (req, res) => {
-        res.render('registro');
-    });
-
-//registro
- app.post('/registro', async (req, res) => {
-        res.render('registro');
-        const nombre = req.body.nombre;
-        const contrasena = req.body.contrasena;
-
-
-    });
-
-app.listen(3000, () => { // Se elimina (req, res) en app.listen
-    console.log('Servidor corriendo en puerto 3000');
+// Iniciar servidor
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

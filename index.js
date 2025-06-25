@@ -1,24 +1,74 @@
+// =============================================
+// Importación de módulos y configuración inicial
+// =============================================
 const express = require("express");
 const mysql = require("mysql");
-const app = express();
-const path = require('path');
+const path = require("path");
 const session = require("express-session");
-const bcryptjs = require('bcryptjs'); 
-const { error, time } = require("console");
-const { name } = require("ejs");
-const { fileURLToPath } = require("url");
-const router = express.Router(); 
-const bodyParser = require('body-parser');
-const multer = require('multer');
-const axios = require('axios'); // o usa fetch
+const bcryptjs = require("bcryptjs");
+const bodyParser = require("body-parser");
+const multer = require("multer");
+const axios = require("axios");
 const fs = require("fs");
 
+// Inicialización de la aplicación Express
+const app = express();
+const router = express.Router();
 
-/*const db = require('./db'); // importa la conexión*/
+// =============================================
+// Configuración de middleware
+// =============================================
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
+// Configuración de sesiones
+app.use(
+  session({
+    secret: "secreto_seguro",
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
+// Configuración del motor de vistas
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
-// Configuración de multer
+// Middleware para debug de renderizado
+app.use((req, res, next) => {
+  const originalRender = res.render;
+  res.render = function (view, options, callback) {
+    console.log(`Renderizando ${view} con datos:`, options);
+    originalRender.call(this, view, options, callback);
+  };
+  next();
+});
+
+// =============================================
+// Configuración de la base de datos
+// =============================================
+const conexion = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "",
+  database: "smns",
+});
+
+// Conexión a la base de datos
+conexion.connect((err) => {
+  if (err) {
+    console.error("Error de conexión a la base de datos:", err);
+    process.exit(1);
+  }
+  console.log("Conectado a la base de datos MySQL");
+});
+
+// =============================================
+// Configuración de Multer para subida de archivos
+// =============================================
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, "uploads/"); // Asegúrate de que esta carpeta exista
@@ -29,267 +79,198 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ storage: storage }); // destino de los archivos subidos
+const upload = multer({ storage: storage });
 
+// =============================================
+// Rutas de vistas
+// =============================================
+const renderRoutes = [
+  { path: "/contacto", view: "contacto" },
+  { path: "/login", view: "login" },
+  { path: "/perfil", view: "perfil" },
+  { path: "/registro", view: "registro" },
+  { path: "/about", view: "about" },
+  { path: "/services", view: "services" },
+  { path: "/vision", view: "vision" },
+  { path: "/index", view: "index" },
+  { path: "/contactosporgestionar", view: "contactosporgestionar" },
+  { path: "/cuentas", view: "cuentas" },
+  { path: "/detallecontacto", view: "detallecontacto" },
+  { path: "/detalle-caso", view: "detalle-caso" },
+  { path: "/crear_caso", view: "crear_caso" },
+  { path: "/graficas", view: "graficas" },
+  { path: "/documentos", view: "documentos" },
+  { path: "/costos", view: "costos" },
+];
 
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname, 'public')));
-app.use(express.static('public'));
-/*
-app.set('view'join(__dirname,'views'))  
-*/
-app.set("view engine", "ejs");
-app.set('views', path.join(__dirname, 'views'));
-
-//conexion con el servidor 
-
-let conexion = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'smns'
-
+renderRoutes.forEach((route) => {
+  app.get(route.path, (req, res) => res.render(route.view));
 });
 
+// =============================================
+// Rutas de autenticación
+// =============================================
+app.post("/login", async (req, res) => {
+  const { login, password } = req.body;
 
-app.use(session({
-  secret: 'secreto_seguro',
-  resave: false,
-  saveUninitialized: false
-}));
-
-
-
-
-app.use(router);
-app.use(express.json());
-app.use(express.urlencoded({extended:false}));
-app.use(express.urlencoded({ extended: true }));
-
-app.use((req, res, next) => {
-  const originalRender = res.render;
-  res.render = function(view, options, callback) {
-    console.log(`Renderizando ${view} con datos:`, options);
-    originalRender.call(this, view, options, callback);
-  };
-  next();
-});
-
-//renderisamos las vistas 
-
-app.get("/contacto", function(req, res) {
-    res.render("contacto");
-});
-
-app.get("/login", function(req, res) {
-    res.render("login");
-});
-
-app.get("/perfil", function(req, res) {
-    res.render("perfil");
-});
-
-app.get("/registro", function(req, res)  {
-    res.render("registro")
-});
-
-app.get("/about", function(req, res)  {
-    res.render("about")
-});
-
-
-app.get("/services", function(req, res)  {
-    res.render("services")
-});
-
-
-app.get("/vision", function(req, res)  {
-    res.render("vision")
-});
-
-app.get("/index", function(req, res)  {
-    res.render("index")
-});
-
-app.get("/contactosporgestionar", function(req, res)  {
-    res.render("contactosporgestionar")
-});
-
-app.get("/cuentas", function(req, res)  {
-    res.render("cuentas")
-});
-
-app.get("/detallecontacto", function(req, res) {
-    res.render("detallecontacto");
-});
-
-app.get("/detalle-caso", function(req, res) {
-    res.render("detalle-caso");
-});
-
-app.get("/crear_caso", function(req, res) {
-    res.render("crear_caso");
-});
-
-app.get("/graficas", function(req, res) {
-    res.render("graficas");
-});
-
-app.get("/documentos", function(req, res) {
-  res.render("documentos");
-});
-
-app.get("/costos", function (req, res) {
-  res.render("costos");
-});
-
-
-
-
-
-
-
-//login 
-
-app.post('/login', async (req, res) => {
-  const login = req.body.login;
-  const contrasena = req.body.password;
-
-  if (login && contrasena) {
-    conexion.query('SELECT * FROM usuarios WHERE login = ?', [login], async (error, results) => {
-      if (error) {
-        console.error('Error en la consulta:', error);
-        return res.status(500).send('Error interno del servidor');
-      }
-
-      if (results.length === 0 || contrasena !== results[0].Contrasena) {
-        res.render('login', {
-          alert: true,
-          alertTitle: 'Credenciales erradas',
-          alertMessage: 'USUARIO O CONTRASEÑA INCORRECTOS',
-          alertIcon: 'error',
-          showconfirmButton: false,
-          time: false,
-          ruta: 'login'
-        });
-      } else {
-        // Guardar datos en sesión
-        req.session.loggedin = true;
-        req.session.name = results[0].login;
-        req.session.id_rol = results[0].id_rol;
-
-        // Redirigir según rol
-        switch (results[0].id_rol) {
-          case 5: //  administrador
-            res.redirect('/perfil');
-            break;
-          case 2: 
-            res.redirect('/registro');
-            break;
-          default:
-            res.redirect('/contacto'); 
-        }
-      }
-    });
-  } else {
-    res.render('login', {
+  if (!login || !password) {
+    return res.render("login", {
       alert: true,
-      alertTitle: 'Campos vacíos',
-      alertMessage: 'Por favor, llena todos los campos',
-      alertIcon: 'warning',
+      alertTitle: "Campos vacíos",
+      alertMessage: "Por favor, llena todos los campos",
+      alertIcon: "warning",
       showconfirmButton: true,
       time: false,
-      ruta: 'login'
+      ruta: "login",
     });
+  }
+
+  try {
+    const results = await new Promise((resolve, reject) => {
+      conexion.query(
+        "SELECT * FROM usuarios WHERE login = ?",
+        [login],
+        (error, results) => {
+          if (error) reject(error);
+          resolve(results);
+        }
+      );
+    });
+
+    if (results.length === 0 || password !== results[0].Contrasena) {
+      return res.render("login", {
+        alert: true,
+        alertTitle: "Credenciales erradas",
+        alertMessage: "USUARIO O CONTRASEÑA INCORRECTOS",
+        alertIcon: "error",
+        showconfirmButton: false,
+        time: false,
+        ruta: "login",
+      });
+    }
+
+    // Guardar datos en sesión
+    req.session.loggedin = true;
+    req.session.name = results[0].login;
+    req.session.id_rol = results[0].id_rol;
+
+    // Redirigir según rol
+    switch (results[0].id_rol) {
+      case 5: // administrador
+        return res.redirect("/perfil");
+      case 2:
+        return res.redirect("/registro");
+      default:
+        return res.redirect("/contacto");
+    }
+  } catch (error) {
+    console.error("Error en la consulta:", error);
+    return res.status(500).send("Error interno del servidor");
   }
 });
 
-//cerrar cesion 
-
-app.post('/logout', (req, res) => {
-  req.session.destroy(err => {
+app.post("/logout", (req, res) => {
+  req.session.destroy((err) => {
     if (err) {
       console.error(err);
-      return res.send('Error al cerrar sesión');
+      return res.send("Error al cerrar sesión");
     }
-    res.redirect('/contacto');  // O la ruta que tengas para login
+    res.redirect("/contacto");
   });
 });
 
+// =============================================
+// Rutas de API
+// =============================================
 
+// Contactos
+app.post("/contactar", (req, res) => {
+  const {
+    nombre,
+    apellido,
+    correo,
+    telefono,
+    paisorigen,
+    tipocaso,
+    comentario,
+  } = req.body;
+  const ingresar =
+    "INSERT INTO contacts (nombre, apellido, email, telefono, paisorigen, tipocaso, comentario) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
+  conexion.query(
+    ingresar,
+    [nombre, apellido, correo, telefono, paisorigen, tipocaso, comentario],
+    (error) => {
+      if (error) {
+        console.error("Error al insertar datos:", error);
+        return res.status(500).send("Error en el servidor");
+      }
+      res.render("contacto", {
+        mensaje:
+          "We're ready to contact you as soon as possible. One of our attorneys will contact you to guide you through your process.",
+        tipoMensaje: "exito",
+      });
+    }
+  );
+});
 
+// Registro de usuarios
+app.post("/validar", (req, res) => {
+  const {
+    nombre,
+    apellido,
+    genero,
+    identificacion,
+    Telefono,
+    documento,
+    email,
+    fechanacimiento,
+  } = req.body;
 
+  const buscar = "SELECT * FROM persona WHERE documento = ?";
+  conexion.query(buscar, [documento], (error, row) => {
+    if (error) {
+      console.error(error);
+      return res.status(500).send("Error en el servidor");
+    }
 
-app.post("/contactar", function(req, res) {
- const { nombre,apellido,correo,telefono,paisorigen,tipocaso,comentario } = req.body;
+    if (row.length > 0) {
+      return res.render("registro", {
+        mensaje: "The user is already registered",
+        tipoMensaje: "error",
+      });
+    }
 
-    let ingresar = "INSERT INTO contacts (nombre,apellido,email,telefono,paisorigen,tipocaso,comentario) VALUES (?,?,?,?,?,?,?)";
-    
-    conexion.query(ingresar, [nombre, apellido,correo,telefono,paisorigen,tipocaso,comentario],function(error) {
+    const registrar =
+      "INSERT INTO persona (nombre, apellido, genero, tip_identificacion, Telefono, fechanacimiento, documento, correo) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+    conexion.query(
+      registrar,
+      [
+        nombre,
+        apellido,
+        genero,
+        identificacion,
+        Telefono,
+        fechanacimiento,
+        documento,
+        email,
+      ],
+      (error) => {
         if (error) {
-            console.error("Error al insertar datos:", error);
-            res.status(500).send("Error en el servidor");
-        } else {
-            console.log("Datos cargados correctamente");
-            res.render("contacto", { mensaje: "We're ready to contact you as soon as possible. One of our attorneys will contact you to guide you through your process.", tipoMensaje: "exito" });
+          console.error(error);
+          return res.status(500).send("Error en el servidor");
         }
-    });
+        res.render("registro", {
+          mensaje: "User successfully registered",
+          tipoMensaje: "exito",
+        });
+      }
+    );
+  });
 });
 
-
-
-
-
-// ingreso de usuarios nuevos
-
-app.post("/validar",function(req, res) {
-const datos =  req.body;
-    let nombre= datos.nombre;
-    let apellido= datos.apellido;
-    let genero= datos.genero;
-    let tip_identificacion= datos.identificacion;
-    let telefono = datos.Telefono;
-    let documento = datos.documento;
-    let correo = datos.email;
-    let fechanacimiento = datos.fechanacimiento;
-   
-    
-
-    let buscar = "select * from persona WHERE documento = '"+documento+"'"
-        conexion.query(buscar,function(error,row){
-        if(error){
-            throw error;
-        }else{
-            if(row.length >0){
-            console.log("usuario ya exite ");
-            res.render("registro", { mensaje: "The user is already registered",tipoMensaje: 'error'  });
-            }else {
-
-              let registrar = "INSERT INTO persona (nombre,apellido,genero,tip_identificacion,Telefono,fechanacimiento,documento,correo) VALUES ('"+nombre+"','"+apellido+"','"+genero+"','"+tip_identificacion+"','"+telefono+"','"+fechanacimiento+"','"+documento+"','"+correo+"') "
-
-               conexion.query(registrar,function(error){
-               if(error){
-                  throw error;
-                 }else{
-                 console.log("Datos cargados de manera correcta");
-                  res.render("registro", { mensaje: "User successfully registered",tipoMensaje: 'exito'
-                  });
-                }
-                });
-                
-
-            }
-            
-        }
-        });  
-
-});
-
-// llamda de lso registros de contacto
-
-app.get("/api/contactos", (req,res) => {
+// API de contactos
+app.get("/api/contactos", (req, res) => {
   const sql = "SELECT * FROM contacts ORDER BY id DESC";
   conexion.query(sql, (err, results) => {
     if (err) {
@@ -300,105 +281,104 @@ app.get("/api/contactos", (req,res) => {
   });
 });
 
-//update de observaciones 
-app.post('/guardar-observacion', (req, res) => {
+// Actualización de observaciones
+app.post("/guardar-observacion", (req, res) => {
   const { id, observacion } = req.body;
-  const sql = 'UPDATE contacts SET observaciones = ? WHERE id = ?';
+  const sql = "UPDATE contacts SET observaciones = ? WHERE id = ?";
 
   conexion.query(sql, [observacion, id], (err, result) => {
     if (err) {
-      console.error('Error al guardar observación:', err);
-      return res.status(500).send('Error al guardar');
+      console.error("Error al guardar observación:", err);
+      return res.status(500).send("Error al guardar");
     }
-    res.send('OK');
+    res.send("OK");
   });
 });
 
-app.post('/actualizar-estado', (req, res) => {
+// Actualización de estado
+app.post("/actualizar-estado", (req, res) => {
   const { id, estado } = req.body;
+  const sql = "UPDATE contacts SET estado = ? WHERE id = ?";
 
-  const sql = 'UPDATE contacts SET estado = ? WHERE id = ?';
   conexion.query(sql, [estado, id], (err, result) => {
     if (err) {
-      console.error('Error al actualizar el estado:', err);
-      return res.status(500).send('Error en el servidor');
+      console.error("Error al actualizar el estado:", err);
+      return res.status(500).send("Error en el servidor");
     }
-    res.send('Estado actualizado correctamente');
+    res.send("Estado actualizado correctamente");
   });
 });
 
-//cuentas de usuario
-
-app.get('/api/personas', (req, res) => {
-  const sql = 'SELECT * FROM persona ORDER BY id DESC' ; 
+// API de personas
+app.get("/api/personas", (req, res) => {
+  const sql = "SELECT * FROM persona ORDER BY id DESC";
   conexion.query(sql, (err, results) => {
     if (err) {
-      console.error('Error al obtener los contactos:', err);
-
-      return res.status(500).send('Error en el servidor');
+      console.error("Error al obtener los contactos:", err);
+      return res.status(500).send("Error en el servidor");
     }
-    res.json(results); 
+    res.json(results);
   });
 });
 
-//detalle de contacto por id
+// Detalle de persona por ID
+app.get("/api/personas/:id", (req, res) => {
+  const id = req.params.id;
 
+  if (isNaN(id)) {
+    return res.status(400).json({ error: "ID no válido" });
+  }
 
-app.get('/api/personas/:id', (req, res) => {
-    const id = req.params.id;
-    
-    if (isNaN(id)) {
-        return res.status(400).json({ error: 'ID no válido' });
+  const sql = `
+    SELECT p.*, u.*, c.casonumero, c.tipo_caso, c.fecha_creacion, c.fecha_actualizacion, c.estado, d.rol AS nombre_rol
+    FROM persona p 
+    LEFT JOIN usuarios u ON p.id = u.idusuarios 
+    LEFT JOIN PROCESOS c ON p.id = c.idusuario
+    LEFT JOIN rol d ON d.idrol = u.id_rol
+    WHERE p.id = ?`;
+
+  conexion.query(sql, [id], (err, results) => {
+    if (err) {
+      console.error("Error al obtener el contacto:", err);
+      return res.status(500).json({ error: "Error en el servidor" });
     }
 
-    const sql = `
-        SELECT p.*, u.*, c.casonumero, c.tipo_caso, c.fecha_creacion, c.fecha_actualizacion, c.estado, d.rol AS nombre_rol
-        FROM persona p 
-        LEFT JOIN usuarios u ON p.id = u.idusuarios 
-        LEFT JOIN PROCESOS c ON p.id = c.idusuario
-        LEFT JOIN rol d ON d.idrol = u.id_rol
-        WHERE p.id = ?
-    `;
-    
-    conexion.query(sql, [id], (err, results) => {
-        if (err) {
-            console.error('Error al obtener el contacto:', err);
-            return res.status(500).json({ error: 'Error en el servidor' });
-        }
-        
-        if (results.length === 0) {
-            return res.status(404).json({ error: 'Contacto no encontrado' });
-        }
-        
-        // Organizar los datos
-        const response = {
-            id: results[0].id,
-            nombre: results[0].nombre,
-            apellido: results[0].apellido,
-            login: results[0].login,
-            id_rol: results[0].id_rol,
-            nombre_rol: results[0].nombre_rol || 'No especificado',
-            correo: results[0].correo,
-            telefono: results[0].telefono,
-            pais: results[0].pais,
-            casos: results
-                .filter(row => row.casonumero !== null)
-                .map(row => ({
-                    numero: row.casonumero,
-                    tipo: row.tipo_caso || 'No especificado',
-                    fecha_creacion: row.fecha_creacion ? (row.fecha_creacion) : 'No especificada',
-                    fecha_actualizacion: row.fecha_actualizacion ? (row.fecha_actualizacion) : 'No actualizado',
-                    estado: row.estado || 'No especificado'
-                }))
-        };
-        
-        res.json(response);
-    });
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Contacto no encontrado" });
+    }
+
+    const response = {
+      id: results[0].id,
+      nombre: results[0].nombre,
+      apellido: results[0].apellido,
+      login: results[0].login,
+      id_rol: results[0].id_rol,
+      nombre_rol: results[0].nombre_rol || "No especificado",
+      correo: results[0].correo,
+      telefono: results[0].telefono,
+      pais: results[0].pais,
+      casos: results
+        .filter((row) => row.casonumero !== null)
+        .map((row) => ({
+          numero: row.casonumero,
+          tipo: row.tipo_caso || "No especificado",
+          fecha_creacion: row.fecha_creacion
+            ? row.fecha_creacion
+            : "No especificada",
+          fecha_actualizacion: row.fecha_actualizacion
+            ? row.fecha_actualizacion
+            : "No actualizado",
+          estado: row.estado || "No especificado",
+        })),
+    };
+
+    res.json(response);
+  });
 });
 
+// API de gráficos
 app.get("/api/graficos", (req, res) => {
   const query = `SELECT * FROM procesos`;
-
   conexion.query(query, (err, results) => {
     if (err) {
       console.error("Error al obtener los datos:", err);
@@ -413,399 +393,329 @@ app.get("/api/graficos", (req, res) => {
   });
 });
 
+// Detalle de caso por número
+app.get("/api/procesos/:casonumero", (req, res) => {
+  const casonumero = req.params.casonumero;
 
+  if (isNaN(casonumero)) {
+    return res.status(400).json({ error: "Número de caso no válido" });
+  }
 
+  const sql = `
+    SELECT p.casonumero, p.tipo_caso, p.fecha_creacion, p.observaciones,
+          p.fecha_actualizacion, p.estado,
+          per.nombre, per.apellido
+    FROM procesos p 
+    LEFT JOIN persona per ON p.idusuario = per.id
+    WHERE p.casonumero = ?`;
 
-// Edetalle caso
-
-app.get('/api/procesos/:casonumero', (req, res) => {
-    const casonumero = req.params.casonumero;
-    
-    if (isNaN(casonumero)) {
-        return res.status(400).json({ error: 'Número de caso no válido' });
+  conexion.query(sql, [casonumero], (err, results) => {
+    if (err) {
+      console.error("Error en la consulta:", err);
+      return res.status(500).json({ error: "Error en el servidor" });
     }
 
-    const sql = `
-        SELECT p.casonumero, p.tipo_caso, p.fecha_creacion, p.observaciones,
-               p.fecha_actualizacion, p.estado,
-               per.nombre, per.apellido
-        FROM procesos p 
-        LEFT JOIN persona per ON p.idusuario = per.id
-        WHERE p.casonumero = ?
-    `;
-    
-    conexion.query(sql, [casonumero], (err, results) => {
-      if (err) {
-        console.error("Error en la consulta:", err);
-        return res.status(500).json({ error: "Error en el servidor" });
-      }
-
-      if (results.length === 0) {
-        return res.status(404).json({ error: "Caso no encontrado" });
-      }
-
-      const response = {
-        casonumero: results[0].casonumero,
-        nombre: results[0].nombre || "No especificado",
-        apellido: results[0].apellido || "No especificado",
-        casos: results.map((row) => ({
-          casonumero: row.casonumero,
-          tipo: row.tipo_caso || "No especificado",
-          fecha_creacion: row.fecha_creacion || "No especificada",
-          fecha_actualizacion: row.fecha_actualizacion || "No actualizado",
-          estado: row.estado || "No especificado",
-          observaciones: row.observaciones || "",
-        })),
-      };
-
-      res.json(response);
-    });
-});
-
-// Nuevo endpoint para obtener observaciones
-app.get('/api/procesos/:casonumero/observaciones', (req, res) => {
-    const casonumero = req.params.casonumero;
-    
-    if (isNaN(casonumero)) {
-        return res.status(400).json({ error: 'Número de caso no válido' });
+    if (results.length === 0) {
+      return res.status(404).json({ error: "Caso no encontrado" });
     }
 
-    const sql = `
-        SELECT o.id, o.observacion AS texto, o.fecha_creacion AS fecha 
-        FROM observaciones o
-        LEFT JOIN usuarios u ON o.id_usuario = u.idusuarios
-        WHERE o.casonumero = ?
-        ORDER BY o.fecha_creacion DESC`;
-    
-    conexion.query(sql, [casonumero], (err, results) => {
-        if (err) {
-            console.error('Error al obtener observaciones:', err);
-            return res.status(500).json({ error: 'Error al obtener observaciones' });
-        }
-        
-        const observaciones = results.map(row => ({
-            id: row.id,
-            texto: row.texto,
-            fecha: row.fecha,
-            usuario: `${row.nombre || 'Anónimo'} ${row.apellido || ''}`.trim()
-        }));
-        
-        res.json(observaciones);
-    });
-});
-
-
-// Ruta para insertar observaciones
-app.post('/api/procesos/:casonumero/observaciones', async (req, res) => {
-    const { casonumero } = req.params;
-    const { observacion, id_usuario } = req.body;
-
-    if (isNaN(casonumero)) {
-        return res.status(400).json({ 
-            success: false,
-            error: 'Número de caso no válido' 
-        });
-    }
-
-    if (!observacion || observacion.trim() === '') {
-        return res.status(400).json({
-            success: false,
-            error: 'La observación no puede estar vacía'
-        });
-    }
-
-    // Función para ejecutar consultas con promesas
-    const query = (sql, params) => {
-        return new Promise((resolve, reject) => {
-            conexion.query(sql, params, (error, results) => {
-                if (error) return reject(error);
-                resolve(results);
-            });
-        });
+    const response = {
+      casonumero: results[0].casonumero,
+      nombre: results[0].nombre || "No especificado",
+      apellido: results[0].apellido || "No especificado",
+      casos: results.map((row) => ({
+        casonumero: row.casonumero,
+        tipo: row.tipo_caso || "No especificado",
+        fecha_creacion: row.fecha_creacion || "No especificada",
+        fecha_actualizacion: row.fecha_actualizacion || "No actualizado",
+        estado: row.estado || "No especificado",
+        observaciones: row.observaciones || "",
+      })),
     };
 
-    try {
-        // Verificar que el caso existe
-        const caso = await query(
-            'SELECT casonumero FROM procesos WHERE casonumero = ?', 
-            [casonumero]
-        );
-        
-        if (caso.length === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Caso no encontrado'
-            });
-        }
-
-        // Insertar la observación
-        const result = await query(
-            `INSERT INTO observaciones 
-             (observacion, id_usuario, casonumero, fecha_creacion) 
-             VALUES (?, ?, ?, NOW())`,
-            [observacion.trim(), id_usuario || null, casonumero]
-        );
-
-        res.status(201).json({
-            success: true,
-            message: 'Observación creada',
-            id: result.insertId
-        });
-
-    } catch (error) {
-        console.error('Error al insertar observación:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Error al guardar la observación',
-            details: process.env.NODE_ENV === 'development' ? error.message : undefined
-        });
-    }
+    res.json(response);
+  });
 });
 
+// Observaciones de caso
+app.get("/api/procesos/:casonumero/observaciones", (req, res) => {
+  const casonumero = req.params.casonumero;
 
-app.post('/actualizar-estado', (req, res) => {
-  const { casonumero, estado } = req.body;
-  const usuarioId = req.user?.id || 'sistema'; // Asume autenticación o usa 'sistema'
+  if (isNaN(casonumero)) {
+    return res.status(400).json({ error: "Número de caso no válido" });
+  }
 
-  // Validar el estado
-  const estadosPermitidos = ['Abierto', 'En trámite', 'Tramitado'];
-  if (!estadosPermitidos.includes(estado)) {
-    return res.status(400).json({ 
+  const sql = `
+    SELECT o.id, o.observacion AS texto, o.fecha_creacion AS fecha 
+    FROM observaciones o
+    LEFT JOIN usuarios u ON o.id_usuario = u.idusuarios
+    WHERE o.casonumero = ?
+    ORDER BY o.fecha_creacion DESC`;
+
+  conexion.query(sql, [casonumero], (err, results) => {
+    if (err) {
+      console.error("Error al obtener observaciones:", err);
+      return res.status(500).json({ error: "Error al obtener observaciones" });
+    }
+
+    const observaciones = results.map((row) => ({
+      id: row.id,
+      texto: row.texto,
+      fecha: row.fecha,
+      usuario: `${row.nombre || "Anónimo"} ${row.apellido || ""}`.trim(),
+    }));
+
+    res.json(observaciones);
+  });
+});
+
+// Crear observación
+app.post("/api/procesos/:casonumero/observaciones", async (req, res) => {
+  const { casonumero } = req.params;
+  const { observacion, id_usuario } = req.body;
+
+  if (isNaN(casonumero)) {
+    return res.status(400).json({
       success: false,
-      error: 'Estado no válido. Los permitidos son: Abierto, En trámite, Tramitado'
+      error: "Número de caso no válido",
     });
   }
 
-  // 1. Actualizar el proceso
-  const sqlUpdate = 'UPDATE procesos SET estado = ?, fecha_actualizacion = NOW() WHERE casonumero = ?';
-  conexion.query(sqlUpdate, [estado, casonumero], (err, result) => {
-    if (err) {
-      console.error('Error al actualizar estado:', err);
-      return res.status(500).json({ 
+  if (!observacion || observacion.trim() === "") {
+    return res.status(400).json({
+      success: false,
+      error: "La observación no puede estar vacía",
+    });
+  }
+
+  try {
+    // Verificar que el caso existe
+    const caso = await new Promise((resolve, reject) => {
+      conexion.query(
+        "SELECT casonumero FROM procesos WHERE casonumero = ?",
+        [casonumero],
+        (err, results) => {
+          if (err) reject(err);
+          resolve(results);
+        }
+      );
+    });
+
+    if (caso.length === 0) {
+      return res.status(404).json({
         success: false,
-        error: 'Error en el servidor'
+        error: "Caso no encontrado",
       });
     }
 
-    // 2. Registrar observación automática 
-    const observacion = `Estado actualizado a: ${estado}`;
-    const sqlObs = 'INSERT INTO observaciones (proceso_id, usuario_id, texto) VALUES ((SELECT id FROM procesos WHERE casonumero = ?), ?, ?)';
-    
-    conexion.query(sqlObs, [casonumero, usuarioId, observacion], (errObs) => {
-      if (errObs) {
-        console.error('Error al registrar observación:', errObs);
-        // Continuamos aunque falle la observación
-      }
+    // Insertar la observación
+    const result = await new Promise((resolve, reject) => {
+      conexion.query(
+        `INSERT INTO observaciones 
+        (observacion, id_usuario, casonumero, fecha_creacion) 
+        VALUES (?, ?, ?, NOW())`,
+        [observacion.trim(), id_usuario || null, casonumero],
+        (err, results) => {
+          if (err) reject(err);
+          resolve(results);
+        }
+      );
+    });
 
-      res.json({
-        success: true,
-        message: 'Estado actualizado correctamente',
-        nuevoEstado: estado
+    res.status(201).json({
+      success: true,
+      message: "Observación creada",
+      id: result.insertId,
+    });
+  } catch (error) {
+    console.error("Error al insertar observación:", error);
+    res.status(500).json({
+      success: false,
+      error: "Error al guardar la observación",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
+  }
+});
+
+// Actualizar estado de caso
+app.put("/api/procesos/:casonumero/estado", async (req, res) => {
+  const { casonumero } = req.params;
+  const { estado } = req.body;
+  const usuarioId = req.user?.id || "sistema";
+
+  // Validar el estado
+  const estadosPermitidos = ["Pendiente", "En trámite", "Tramitado"];
+  if (!estadosPermitidos.includes(estado)) {
+    return res.status(400).json({
+      success: false,
+      error:
+        "Estado no válido. Los permitidos son: Pendiente, En trámite, Tramitado",
+    });
+  }
+
+  try {
+    // 1. Actualizar el proceso
+    const updateResult = await new Promise((resolve, reject) => {
+      const sqlUpdate =
+        "UPDATE procesos SET estado = ?, fecha_actualizacion = NOW() WHERE casonumero = ?";
+      conexion.query(sqlUpdate, [estado, casonumero], (err, result) => {
+        if (err) reject(err);
+        resolve(result);
       });
+    });
+
+    if (updateResult.affectedRows === 0) {
+      return res.status(404).json({
+        success: false,
+        error: "Caso no encontrado",
+      });
+    }
+
+    // 2. Registrar observación automática (opcional)
+    const observacion = `Estado actualizado a: ${estado}`;
+    try {
+      await new Promise((resolve, reject) => {
+        const sqlObs = `INSERT INTO observaciones 
+                        (observacion, id_usuario, casonumero, fecha_creacion) 
+                        VALUES (?, ?, ?, NOW())`;
+        conexion.query(
+          sqlObs,
+          [observacion, usuarioId, casonumero],
+          (err, result) => {
+            if (err) reject(err);
+            resolve(result);
+          }
+        );
+      });
+    } catch (obsError) {
+      console.error("Error al registrar observación:", obsError);
+    }
+
+    res.json({
+      success: true,
+      message: "Estado actualizado correctamente",
+      nuevoEstado: estado,
+    });
+  } catch (error) {
+    console.error("Error al actualizar estado:", error);
+    res.status(500).json({
+      success: false,
+      error: "Error en el servidor al actualizar el estado",
+    });
+  }
+});
+
+// =============================================
+// Rutas de procesos
+// =============================================
+app.get("/procesos", (req, res) => {
+  res.render("procesos", {
+    mensaje: null,
+    tipoMensaje: null,
+    datosFormulario: null,
+  });
+});
+
+app.post("/procesos", (req, res) => {
+  const { tipo_caso, area_practica, estado, observaciones, fecha_creacion } =
+    req.body;
+
+  // Validación
+  const errores = [];
+  if (!tipo_caso) errores.push("El tipo de caso es requerido");
+  if (!area_practica) errores.push("El área práctica es requerida");
+  if (!estado) errores.push("El estado es requerido");
+  if (!observaciones) errores.push("Las observaciones son requeridas");
+  if (!fecha_creacion) errores.push("La fecha de creación es requerida");
+
+  if (errores.length > 0) {
+    return res.render("procesos", {
+      mensaje: errores.join("<br>"),
+      tipoMensaje: "error",
+      datosFormulario: req.body,
+    });
+  }
+
+  // Procesar en BD
+  const query = "INSERT INTO procesos SET ?";
+  const datos = {
+    tipo_caso,
+    area_practica,
+    estado,
+    observaciones,
+    fecha_creacion,
+  };
+
+  conexion.query(query, datos, (error, results) => {
+    if (error) {
+      console.error("Error en BD:", error);
+      return res.render("procesos", {
+        mensaje: "Error al guardar en la base de datos",
+        tipoMensaje: "error",
+        datosFormulario: req.body,
+      });
+    }
+
+    res.render("procesos", {
+      mensaje: "Caso registrado exitosamente",
+      tipoMensaje: "exito",
+      datosFormulario: null,
     });
   });
 });
 
+// =============================================
+// Rutas de documentos
+// =============================================
+app.post(
+  "/api/procesos/:numerocaso/documentos",
+  upload.single("adjuntos"),
+  (req, res) => {
+    const nombre = req.body.nombre;
+    const numerocaso = req.params.numerocaso;
+    const archivo = req.file;
 
-// Endpoint para actualizar estado (PUT)
-app.put('/api/procesos/:casonumero/estado', async (req, res) => {
-    const { casonumero } = req.params;
-    const { estado } = req.body;
-    const usuarioId = req.user?.id || 'sistema';
-
-    // Validar el estado
-    const estadosPermitidos = ['Pendiente', 'En trámite', 'Tramitado'];
-    if (!estadosPermitidos.includes(estado)) {
-        return res.status(400).json({ 
-            success: false,
-            error: 'Estado no válido. Los permitidos son: Pendiente, En trámite, Tramitado'
-        });
-    }
-
-    try {
-        // 1. Actualizar el proceso
-        const updateResult = await new Promise((resolve, reject) => {
-            const sqlUpdate = 'UPDATE procesos SET estado = ?, fecha_actualizacion = NOW() WHERE casonumero = ?';
-            conexion.query(sqlUpdate, [estado, casonumero], (err, result) => {
-                if (err) return reject(err);
-                resolve(result);
-            });
-        });
-
-        if (updateResult.affectedRows === 0) {
-            return res.status(404).json({
-                success: false,
-                error: 'Caso no encontrado'
-            });
-        }
-
-        // 2. Registrar observación automática (opcional)
-        const observacion = `Estado actualizado a: ${estado}`;
-        try {
-            await new Promise((resolve, reject) => {
-                const sqlObs = `INSERT INTO observaciones 
-                               (observacion, id_usuario, casonumero, fecha_creacion) 
-                               VALUES (?, ?, ?, NOW())`;
-                conexion.query(sqlObs, [observacion, usuarioId, casonumero], (err, result) => {
-                    if (err) return reject(err);
-                    resolve(result);
-                });
-            });
-        } catch (obsError) {
-            console.error('Error al registrar observación:', obsError);
-            // Continuamos aunque falle la observación
-        }
-
-        res.json({
-            success: true,
-            message: 'Estado actualizado correctamente',
-            nuevoEstado: estado
-        });
-
-    } catch (error) {
-        console.error('Error al actualizar estado:', error);
-        res.status(500).json({
-            success: false,
-            error: 'Error en el servidor al actualizar el estado'
-        });
-    }
-});
-
-
-
-//cRuta para mostrar el formulario
-app.get('/procesos', (req, res) => {
-    res.render('procesos', { 
-        mensaje: null,
-        tipoMensaje: null,
-        datosFormulario: null 
-    });
-});
-
-// Ruta para procesar el formulario
-app.post('/procesos', (req, res) => {
-    const { tipo_caso, area_practica, estado, observaciones, fecha_creacion } = req.body;
-    
-    // Validación
-    const errores = [];
-    if (!tipo_caso) errores.push('El tipo de caso es requerido');
-    if (!area_practica) errores.push('El área práctica es requerida');
-    if (!estado) errores.push('El estado es requerido');
-    if (!observaciones) errores.push('Las observaciones son requeridas');
-    if (!fecha_creacion) errores.push('La fecha de creación es requerida');
-
-    if (errores.length > 0) {
-        return res.render('procesos', {
-            mensaje: errores.join('<br>'),
-            tipoMensaje: 'error',
-            datosFormulario: req.body // Para mantener los datos ingresados
-        });
-    }
-
-    // Procesar en BD (ejemplo)
-    const query = "INSERT INTO procesos SET ?";
-    const datos = { tipo_caso, area_practica, estado, observaciones, fecha_creacion };
-
-    conexion.query(query, datos, (error, results) => {
-        if (error) {
-            console.error("Error en BD:", error);
-            return res.render('procesos', {
-                mensaje: 'Error al guardar en la base de datos',
-                tipoMensaje: 'error',
-                datosFormulario: req.body
-            });
-        }
-
-        res.render('procesos', {
-            mensaje: 'Caso registrado exitosamente',
-            tipoMensaje: 'exito',
-            datosFormulario: null
-        });
-    });
-});
-
-
-module.exports = router;
-
-
-
-// Ruta para vista EJS que consume tu API JSON
-app.get('/detalle-caso/:casonumero', async (req, res) => {
-    try {
-        const response = await axios.get(`http://localhost:${port}/api/procesos/${req.params.casonumero}`);
-        const data = response.data;
-
-        if (data.error) {
-            return res.render('error', { message: data.error });
-        }
-
-        // Transforma los datos de la API al formato que espera tu EJS
-        res.render('detalle-caso', {
-            caso: {
-                numero: data.casonumero,
-                nombre: data.nombre,
-                apellido: data.apellido,
-                tipo: data.casos[0].tipo,
-                estado: data.casos[0].estado,
-                fecha_creacion: data.casos[0].fecha_creacion,
-                observaciones: data.casos[0].observaciones
-            }
-        });
-    } catch (error) {
-        console.error("Error al obtener datos del caso:", error);
-        res.render('error', { message: "Error al cargar el caso" });
-    }
-});
-  
-//upload de archivos
-
-
-// Ruta para subir documentos
-app.post('/api/procesos/:numerocaso/documentos', upload.single("adjuntos"), (req, res) => {
-  const nombre = req.body.nombre;
-  const numerocaso = req.params.numerocaso; // Ahora se obtiene de los parámetros de la URL
-  const archivo = req.file;
-
-  if (!archivo) {
+    if (!archivo) {
       return res.status(400).send("No se subió ningún archivo.");
-  }
+    }
 
-  const nombreArchivo = archivo.filename;
-  const rutaArchivo = archivo.path;
+    const nombreArchivo = archivo.filename;
+    const rutaArchivo = archivo.path;
 
-  const query = `
-      INSERT INTO documentos (nombre, archivo, ruta, id_proceso)
-      VALUES (?, ?, ?, ?)
+    const query = `
+    INSERT INTO documentos (nombre, archivo, ruta, id_proceso)
+    VALUES (?, ?, ?, ?)
   `;
 
-  conexion.query(
+    conexion.query(
       query,
       [nombre, nombreArchivo, rutaArchivo, numerocaso],
       (err, result) => {
-          if (err) {
-              console.error("Error al insertar en la base de datos:", err);
-              return res.status(500).send("Error al guardar en la base de datos.");
-          }
+        if (err) {
+          console.error("Error al insertar en la base de datos:", err);
+          return res.status(500).send("Error al guardar en la base de datos.");
+        }
 
-          console.log("📄 Documento subido y guardado:", {
-              nombre,
-              nombreArchivo,
-              rutaArchivo,
-              numerocaso,
-          });
+        console.log("📄 Documento subido y guardado:", {
+          nombre,
+          nombreArchivo,
+          rutaArchivo,
+          numerocaso,
+        });
 
-          res.send("✅ Documento subido y guardado correctamente.");
+        res.send("✅ Documento subido y guardado correctamente.");
       }
-  );
+    );
+  }
+);
+
+// =============================================
+// Inicio del servidor
+// =============================================
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log(`Servidor corriendo en http://localhost:${port}`);
 });
 
-
-
-
-
-
-
-
-app.listen(3000, () => {
-  console.log('Servidor corriendo en http://localhost:3000');
-});
+module.exports = router;

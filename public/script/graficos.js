@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     <p>Estado: ${estado}</p>
                     <div class="grafico-barra" style="width: ${
                       estado * 10
-                    }%; background-color: #4CAF50; height: 20px; margin-bottom: 10px;"></div>
+                    }%; background-color:rgb(46, 26, 159); height: 20px; margin-bottom: 10px;"></div>
                   `;
                 graficoContainer.appendChild(grafico);
             }
