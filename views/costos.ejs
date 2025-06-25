@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Casos</title>
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Subnavegación */
+        .subnavegacion {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .subnavegacion button {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            position: relative;
+        }
+        
+        .subnavegacion button.active {
+            font-weight: bold;
+            color: #007bff;
+        }
+        
+        .subnavegacion button.active:after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: #007bff;
+        }
+        
+        /* Secciones */
+        #seccion-casos, #seccion-documentos {
+            background: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        /* Estilos para casos */
+        .info-contacto {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .contenedor-tabla {
+            margin-top: 20px;
+        }
+        
+        .tabla-casos {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .tabla-casos th, .tabla-casos td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tabla-casos th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        /* Estilos para documentos */
+        .tabla-documentos {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        
+        .tabla-documentos th, .tabla-documentos td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .tabla-documentos th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        .btn-descargar, .btn-eliminar {
+            padding: 5px 10px;
+            border-radius: 3px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        
+        .btn-descargar {
+            background-color: #28a745;
+            color: white;
+            border: 1px solid #28a745;
+        }
+        
+        .btn-eliminar {
+            background-color: #dc3545;
+            color: white;
+            border: 1px solid #dc3545;
+            cursor: pointer;
+        }
+        
+        .subir-documento {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+        
+        /* Badges de estado */
+        .badge-estado {
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 600;
+            color: white;
+        }
+        
+        .badge-pendiente {
+            background-color: #ffc107;
+        }
+        
+        .badge-en-tramite {
+            background-color: #17a2b8;
+        }
+        
+        .badge-tramitado {
+            background-color: #28a745;
+        }
+        
+        /* Alertas */
+        .alerta {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 4px;
+            color: white;
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+        
+        .alerta.success {
+            background-color: #28a745;
+        }
+        
+        .alerta.error {
+            background-color: #dc3545;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        /* Formularios */
+        input, select, textarea {
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        
+        button, .btn {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        button:hover, .btn:hover {
+            background-color: #0056b3;
+        }
+        
+        button:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+        }
+        
+        /* Observaciones */
+        .observacion-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            border-left: 4px solid #007bff;
+        }
+        
+        .observacion-usuario {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .observacion-fecha {
+            font-size: 12px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+        
+        /* Selector de estado */
+        #selector-estado-container {
+            margin: 20px 0;
+            display: none;
+        }
+        
+        #selector-estado {
+            padding: 8px 15px;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="subnavegacion">
+            <button id="btn-ver-casos" class="active">Casos</button>
+            <button id="btn-ver-documentos">Documentos</button>
+        </div>
+        
+        <div id="seccion-casos">
+            <div id="detalle-contacto"></div>
+            
+            <div id="selector-estado-container">
+                <select id="selector-estado">
+                    <option value="Abierto">Abierto</option>
+                    <option value="En trámite">En trámite</option>
+                    <option value="Tramitado">Tramitado</option>
+                </select>
+                <button id="btn-cambiar-estado">Actualizar Estado</button>
+                <div id="estado-actual"></div>
+            </div>
+            
+            <div class="seccion-observaciones">
+                <h3>Observaciones</h3>
+                <div id="observaciones-lista"></div>
+                
+                <form id="form-nueva-observacion">
+                    <textarea id="nueva-observacion" placeholder="Escribe una nueva observación..." required></textarea>
+                    <button type="submit">Enviar Observación</button>
+                </form>
+            </div>
+        </div>
+        
+        <div id="seccion-documentos" style="display: none;">
+            <!-- Contenido de documentos se cargará aquí dinámicamente -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            // Obtener ID del caso
+            const casoId = obtenerCasoId();
+            
+            // Navegación entre casos y documentos
+            const btnCasos = document.getElementById("btn-ver-casos");
+            const btnDocumentos = document.getElementById("btn-ver-documentos");
+            const seccionCasos = document.getElementById("seccion-casos");
+            const seccionDocumentos = document.getElementById("seccion-documentos");
+
+            if (btnCasos && btnDocumentos) {
+                btnCasos.addEventListener("click", function() {
+                    mostrarSeccion('casos');
+                    if (casoId) {
+                        cargarDetallesCaso(casoId);
+                    } else {
+                        cargarListaCasos();
+                    }
+                });
+
+                btnDocumentos.addEventListener("click", function() {
+                    mostrarSeccion('documentos');
+                    if (casoId) {
+                        cargarDocumentos(casoId);
+                    } else {
+                        document.getElementById("seccion-documentos").innerHTML = 
+                            '<p class="error">Seleccione un caso para ver sus documentos</p>';
+                    }
+                });
+            }
+
+            // Cargar contenido inicial
+            if (casoId) {
+                cargarDetallesCaso(casoId);
+                cargarObservaciones(casoId);
+            } else {
+                cargarListaCasos();
+            }
+
+            // Event listeners para formularios
+            const formObservacion = document.getElementById("form-nueva-observacion");
+            if (formObservacion) {
+                formObservacion.addEventListener("submit", function (e) {
+                    e.preventDefault();
+                    agregarObservacion(casoId);
+                });
+            }
+
+            const btnEstado = document.getElementById("btn-cambiar-estado");
+            if (btnEstado) {
+                btnEstado.addEventListener("click", function () {
+                    cambiarEstado(casoId);
+                });
+            }
+        });
+
+        // Funciones principales
+        function obtenerCasoId() {
+            const urlParams = new URLSearchParams(window.location.search);
+            let casoId = urlParams.get("id");
+
+            if (!casoId) {
+                const pathParts = window.location.pathname.split("/");
+                casoId = pathParts[pathParts.length - 1].replace(".html", "");
+            }
+
+            return casoId && !isNaN(casoId) ? casoId : null;
+        }
+
+        function mostrarSeccion(seccion) {
+            const btnCasos = document.getElementById("btn-ver-casos");
+            const btnDocumentos = document.getElementById("btn-ver-documentos");
+            const seccionCasos = document.getElementById("seccion-casos");
+            const seccionDocumentos = document.getElementById("seccion-documentos");
+
+            if (seccion === 'casos') {
+                btnCasos.classList.add('active');
+                btnDocumentos.classList.remove('active');
+                seccionCasos.style.display = 'block';
+                seccionDocumentos.style.display = 'none';
+            } else {
+                btnCasos.classList.remove('active');
+                btnDocumentos.classList.add('active');
+                seccionCasos.style.display = 'none';
+                seccionDocumentos.style.display = 'block';
+            }
+        }
+
+        function cargarDetallesCaso(casoId) {
+            fetch(`/api/procesos/${casoId}`)
+                .then((response) => {
+                    if (!response.ok) throw new Error("Error en la respuesta del servidor");
+                    return response.json();
+                })
+                .then((data) => {
+                    renderizarDetallesCaso(data, casoId);
+                    if (data.casos && data.casos.length > 0) {
+                        const estadoActual = data.casos[0].estado;
+                        configurarSelectorEstado(estadoActual);
+                        actualizarEstadoEnUI(estadoActual);
+                        document.getElementById("selector-estado-container").style.display = "block";
+                    }
+                })
+                .catch((error) => {
+                    mostrarError(`Error al cargar los datos: ${error.message}`);
+                });
+        }
+
+        function cargarListaCasos(pagina = 1, porPagina = 10) {
+            fetch(`/api/casos?pagina=${pagina}&porPagina=${porPagina}`)
+                .then((response) => response.json())
+                .then((data) => {
+                    const { casos, total, paginas } = data;
+                    
+                    document.getElementById("detalle-contacto").innerHTML = `
+                        <h3>Mis Casos</h3>
+                        <div class="lista-casos">
+                            ${casos.map((caso) => `
+                                <div class="caso-item">
+                                    <h4>Caso #${caso.id}: ${caso.titulo}</h4>
+                                    <p><strong>Estado:</strong> <span class="badge-estado ${getEstadoClass(caso.estado)}">${caso.estado}</span></p>
+                                    <p><strong>Fecha:</strong> ${new Date(caso.fecha).toLocaleDateString()}</p>
+                                    <a href="/detalle-caso?id=${caso.id}" class="btn-ver">Ver detalle</a>
+                                </div>
+                            `).join("")}
+                        </div>
+                        <div class="paginacion">
+                            ${generarControlesPaginacion(pagina, paginas, 'cargarListaCasos')}
+                        </div>`;
+
+                    document.getElementById("selector-estado-container").style.display = "none";
+                    document.querySelector(".seccion-observaciones").style.display = "none";
+                })
+                .catch(error => {
+                    mostrarError(`Error al cargar casos: ${error.message}`);
+                });
+        }
+
+        function cargarDocumentos(casoId) {
+            const contenedor = document.getElementById("seccion-documentos");
+
+            contenedor.innerHTML = '<p>Cargando documentos...</p>';
+
+            fetch(`/api/procesos/${casoId}/documentos`)
+                .then(response => {
+                    if (!response.ok) throw new Error("Error al cargar documentos");
+                    return response.json();
+                })
+                .then(documentos => {
+                    if (documentos.length === 0) {
+                        contenedor.innerHTML = '<p class="sin-documentos">No hay documentos asociados a este caso</p>';
+                        return;
+                    }
+
+                    contenedor.innerHTML = `
+                        <div class="lista-documentos">
+                            <h3>Documentos del caso</h3>
+                            <table class="tabla-documentos">
+                                <thead>
+                                    <tr>
+                                        <th>Nombre</th>
+                                        <th>Tipo</th>
+                                        <th>Fecha</th>
+                                        <th>Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${documentos.map(doc => `
+                                        <tr>
+                                            <td>${doc.nombre}</td>
+                                            <td>${doc.tipo}</td>
+                                            <td>${new Date(doc.fecha).toLocaleDateString()}</td>
+                                            <td>
+                                                <a href="/api/documentos/${doc.id}/descargar" class="btn-descargar">Descargar</a>
+                                                ${doc.puedeEliminar ? `<button class="btn-eliminar" data-id="${doc.id}">Eliminar</button>` : ''}
+                                            </td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="subir-documento">
+                            <h4>Subir nuevo documento</h4>
+                            <form id="form-subir-documento" enctype="multipart/form-data">
+                                <input type="file" id="nuevo-documento" required>
+                                <select id="tipo-documento" required>
+                                    <option value="">Seleccione tipo</option>
+                                    <option value="factura">Factura</option>
+                                    <option value="contrato">Contrato</option>
+                                    <option value="identificacion">Identificación</option>
+                                    <option value="otro">Otro</option>
+                                </select>
+                                <button type="submit">Subir Documento</button>
+                            </form>
+                        </div>
+                    `;
+
+                    // Manejar eliminación de documentos
+                    document.querySelectorAll('.btn-eliminar').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const docId = this.getAttribute('data-id');
+                            eliminarDocumento(docId, casoId);
+                        });
+                    });
+
+                    // Manejar subida de nuevos documentos
+                    const formSubir = document.getElementById("form-subir-documento");
+                    if (formSubir) {
+                        formSubir.addEventListener("submit", function(e) {
+                            e.preventDefault();
+                            subirDocumento(casoId);
+                        });
+                    }
+                })
+                .catch(error => {
+                    contenedor.innerHTML = `<p class="error">Error al cargar documentos: ${error.message}</p>`;
+                });
+        }
+
+        function cargarObservaciones(casoId, pagina = 1, porPagina = 5) {
+            fetch(`/api/procesos/${casoId}/observaciones?pagina=${pagina}&porPagina=${porPagina}`)
+                .then((response) => {
+                    if (!response.ok) throw new Error("Error al cargar observaciones");
+                    return response.json();
+                })
+                .then(data => {
+                    const { observaciones, total, paginas } = data;
+                    renderizarObservaciones(observaciones);
+                    
+                    const paginacionContainer = document.createElement('div');
+                    paginacionContainer.className = 'paginacion';
+                    paginacionContainer.innerHTML = generarControlesPaginacion(
+                        pagina, 
+                        paginas, 
+                        (nuevaPagina) => cargarObservaciones(casoId, nuevaPagina)
+                    );
+                    
+                    const observacionesContainer = document.getElementById("observaciones-lista");
+                    observacionesContainer.appendChild(paginacionContainer);
+                })
+                .catch((error) => {
+                    document.getElementById("observaciones-lista").innerHTML = 
+                        `<p class="error">Error al cargar observaciones: ${error.message}</p>`;
+                });
+        }
+
+        // Funciones auxiliares
+        function renderizarDetallesCaso(data, casoId) {
+            const detalleDiv = document.getElementById("detalle-contacto");
+            if (data.error) {
+                detalleDiv.innerHTML = `<p class="error">${data.error}</p>`;
+                return;
+            }
+
+            let htmlContent = `
+                <div class="info-contacto">
+                    <h3> N° ${data.casonumero || casoId}</h3>
+                    ${data.nombre || data.apellido ? 
+                        `<p><strong>Cliente:</strong> ${data.nombre || ""} ${data.apellido || ""}</p>` : ""}
+                </div>`;
+
+            if (data.casos && data.casos.length > 0) {
+                htmlContent += `
+                    <div class="contenedor-tabla">
+                        <h3>Detalles</h3>
+                        <table class="tabla-casos">
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Fecha Creación</th>
+                                    <th>Fecha Última Gestión</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${data.casos.map((caso) => `
+                                    <tr>
+                                        <td>${caso.tipo || "N/A"}</td>
+                                        <td>${caso.fecha_creacion ? 
+                                            new Date(caso.fecha_creacion).toLocaleDateString() : "N/A"}</td>
+                                        <td>${caso.fecha_actualizacion ? 
+                                            new Date(caso.fecha_actualizacion).toLocaleDateString() : "N/A"}</td>
+                                    </tr>
+                                `).join("")}
+                            </tbody>
+                        </table>
+                    </div>`;
+            } else {
+                htmlContent += '<p class="sin-casos">No se encontraron detalles adicionales</p>';
+            }
+
+            detalleDiv.innerHTML = htmlContent;
+            document.querySelector(".seccion-observaciones").style.display = "block";
+        }
+
+        function renderizarObservaciones(observaciones) {
+            const contenedor = document.getElementById("observaciones-lista");
+            if (!observaciones || observaciones.length === 0) {
+                contenedor.innerHTML = '<p class="sin-casos">No hay observaciones registradas</p>';
+                return;
+            }
+
+            contenedor.innerHTML = observaciones
+                .map((obs) => `
+                    <div class="observacion-item">
+                        <div class="observacion-usuario">${obs.usuario || "Sistema"}</div>
+                        <div class="observacion-texto">${obs.texto}</div>
+                        <div class="observacion-fecha">${new Date(obs.fecha).toLocaleString()}</div>
+                    </div>
+                `).join("");
+        }
+
+        function agregarObservacion(casoId) {
+            const textoObservacion = document.getElementById("nueva-observacion").value.trim();
+            const btnEnviar = document.querySelector('#form-nueva-observacion button[type="submit"]');
+
+            if (!textoObservacion) {
+                mostrarAlerta("Por favor escribe una observación válida", "error");
+                return;
+            }
+
+            btnEnviar.disabled = true;
+            btnEnviar.textContent = "Enviando...";
+
+            fetch(`/api/procesos/${casoId}/observaciones`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ observacion: textoObservacion }),
+            })
+                .then((response) => {
+                    if (!response.ok) return response.json().then((err) => { throw err; });
+                    return response.json();
+                })
+                .then((data) => {
+                    if (data.success) {
+                        document.getElementById("nueva-observacion").value = "";
+                        cargarObservaciones(casoId);
+                        mostrarAlerta("Observación guardada correctamente", "success");
+                    } else {
+                        throw new Error(data.error || "Error desconocido");
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                    mostrarAlerta(error.message || "Error al guardar la observación", "error");
+                })
+                .finally(() => {
+                    btnEnviar.disabled = false;
+                    btnEnviar.textContent = "Enviar Observación";
+                });
+        }
+
+        function subirDocumento(casoId) {
+            const inputArchivo = document.getElementById("nuevo-documento");
+            const selectTipo = document.getElementById("tipo-documento");
+            const form = document.getElementById("form-subir-documento");
+            const btnSubmit = form.querySelector('button[type="submit"]');
+
+            if (!inputArchivo.files || inputArchivo.files.length === 0) {
+                mostrarAlerta("Por favor seleccione un archivo", "error");
+                return;
+            }
+
+            if (!selectTipo.value) {
+                mostrarAlerta("Por favor seleccione un tipo de documento", "error");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('documento', inputArchivo.files[0]);
+            formData.append('tipo', selectTipo.value);
+
+            btnSubmit.disabled = true;
+            btnSubmit.textContent = "Subiendo...";
+
+            fetch(`/api/procesos/${casoId}/documentos`, {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error("Error al subir documento");
+                    return response.json();
+                })
+                .then(data => {
+                    mostrarAlerta("Documento subido correctamente", "success");
+                    cargarDocumentos(casoId);
+                    form.reset();
+                })
+                .catch(error => {
+                    mostrarAlerta(error.message, "error");
+                })
+                .finally(() => {
+                    btnSubmit.disabled = false;
+                    btnSubmit.textContent = "Subir Documento";
+                });
+        }
+
+        function eliminarDocumento(docId, casoId) {
+            if (!confirm("¿Está seguro que desea eliminar este documento?")) return;
+
+            fetch(`/api/documentos/${docId}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (!response.ok) throw new Error("Error al eliminar documento");
+                    return response.json();
+                })
+                .then(data => {
+                    mostrarAlerta("Documento eliminado correctamente", "success");
+                    cargarDocumentos(casoId);
+                })
+                .catch(error => {
+                    mostrarAlerta(error.message, "error");
+                });
+        }
+
+        function cambiarEstado(casoId) {
+            const selector = document.getElementById("selector-estado");
+            const nuevoEstado = selector.value;
+            const btnCambiarEstado = document.getElementById("btn-cambiar-estado");
+
+            btnCambiarEstado.disabled = true;
+            btnCambiarEstado.textContent = "Actualizando...";
+
+            fetch(`/api/procesos/${casoId}/estado`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ estado: nuevoEstado }),
+            })
+                .then(async (response) => {
+                    const contentType = response.headers.get("content-type");
+                    if (!contentType || !contentType.includes("application/json")) {
+                        const text = await response.text();
+                        throw new Error(`Respuesta inesperada del servidor: ${text.substring(0, 100)}`);
+                    }
+                    return response.json();
+                })
+                .then((data) => {
+                    if (!data.success) throw new Error(data.error || "Error al actualizar el estado");
+                    
+                    actualizarEstadoEnUI(nuevoEstado);
+                    configurarSelectorEstado(nuevoEstado);
+                    mostrarAlerta("Estado actualizado correctamente", "success");
+                })
+                .catch((error) => {
+                    console.error("Error:", error);
+                    mostrarAlerta(error.message, "error");
+                })
+                .finally(() => {
+                    btnCambiarEstado.disabled = false;
+                    btnCambiarEstado.textContent = "Actualizar Estado";
+                });
+        }
+
+        function configurarSelectorEstado(estadoActual) {
+            const selector = document.getElementById("selector-estado");
+            if (!selector) return;
+            selector.value = estadoActual;
+
+            let color;
+            switch (estadoActual) {
+                case "Abierto": color = "#ffc107"; break;
+                case "En trámite": color = "#17a2b8"; break;
+                case "Tramitado": color = "#28a745"; break;
+                default: color = "#6c757d";
+            }
+            selector.style.backgroundColor = color;
+            selector.style.color = "white";
+        }
+
+        function actualizarEstadoEnUI(nuevoEstado) {
+            const estadoActualElement = document.getElementById("estado-actual");
+            if (!estadoActualElement) return;
+
+            let badgeClass, color;
+            switch (nuevoEstado.toLowerCase()) {
+                case "abierto":
+                    badgeClass = "badge-pendiente";
+                    color = "#ffc107";
+                    break;
+                case "en trámite":
+                    badgeClass = "badge-en-tramite";
+                    color = "#17a2b8";
+                    break;
+                case "tramitado":
+                    badgeClass = "badge-tramitado";
+                    color = "#28a745";
+                    break;
+                default:
+                    badgeClass = "badge-pendiente";
+                    color = "#6c757d";
+            }
+
+            estadoActualElement.innerHTML = `
+                <p><strong>Estado actual:</strong> <span class="badge-estado ${badgeClass}">${nuevoEstado}</span></p>
+            `;
+
+            const selector = document.getElementById("selector-estado");
+            if (selector) {
+                selector.style.backgroundColor = color;
+                selector.style.color = "white";
+            }
+        }
+
+        function generarControlesPaginacion(paginaActual, totalPaginas, callback) {
+            let html = '';
+            
+            if (paginaActual > 1) {
+                html += `<button onclick="${callback}(${paginaActual - 1})">Anterior</button>`;
+            }
+            
+            const inicio = Math.max(1, paginaActual - 2);
+            const fin = Math.min(totalPaginas, paginaActual + 2);
+            
+            for (let i = inicio; i <= fin; i++) {
+                if (i === paginaActual) {
+                    html += `<span class="pagina-actual">${i}</span>`;
+                } else {
+                    html += `<button onclick="${callback}(${i})">${i}</button>`;
+                }
+            }
+            
+            if (paginaActual < totalPaginas) {
+                html += `<button onclick="${callback}(${paginaActual + 1})">Siguiente</button>`;
+            }
+            
+            return html;
+        }
+
+        function getEstadoClass(estado) {
+            const estados = {
+                Abierto: "badge-pendiente",
+                "En trámite": "badge-en-tramite",
+                Tramitado: "badge-tramitado",
+            };
+            return estados[estado] || "badge-pendiente";
+        }
+
+        function mostrarError(mensaje) {
+            document.getElementById("detalle-contacto").innerHTML = 
+                `<p class="error">${mensaje}</p>`;
+        }
+
+        function mostrarAlerta(mensaje, tipo = "error") {
+            document.querySelectorAll(".alerta").forEach((alerta) => alerta.remove());
+            const alerta = document.createElement("div");
+            alerta.className = `alerta ${tipo}`;
+            alerta.textContent = mensaje;
+            document.body.appendChild(alerta);
+            setTimeout(() => alerta.remove(), 5000);
+        }
+    </script>
+</body>
+</html>

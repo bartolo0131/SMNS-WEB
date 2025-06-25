@@ -10,9 +10,27 @@ const { fileURLToPath } = require("url");
 const router = express.Router(); 
 const bodyParser = require('body-parser');
 const multer = require('multer');
-const upload = multer({ dest: 'uploads/' }); // crea una carpeta donde se guardarán los archivos
+const axios = require('axios'); // o usa fetch
+const fs = require("fs");
+
 
 /*const db = require('./db'); // importa la conexión*/
+
+
+
+// Configuración de multer
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/"); // Asegúrate de que esta carpeta exista
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(null, uniqueSuffix + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage }); // destino de los archivos subidos
+
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -117,6 +135,18 @@ app.get("/crear_caso", function(req, res) {
 app.get("/graficas", function(req, res) {
     res.render("graficas");
 });
+
+app.get("/documentos", function(req, res) {
+  res.render("documentos");
+});
+
+app.get("/costos", function (req, res) {
+  res.render("costos");
+});
+
+
+
+
 
 
 
@@ -259,14 +289,14 @@ const datos =  req.body;
 
 // llamda de lso registros de contacto
 
-app.get('/api/contactos', (res) => {
-  const sql = 'SELECT * FROM contacts ORDER BY id DESC' ; 
+app.get("/api/contactos", (req,res) => {
+  const sql = "SELECT * FROM contacts ORDER BY id DESC";
   conexion.query(sql, (err, results) => {
     if (err) {
-      console.error('Error al obtener los contactos:', err);
-      return res.status(500).send('Error en el servidor');
+      console.error("Error al obtener los contactos:", err);
+      return res.status(500).send("Error en el servidor");
     }
-    res.json(results); 
+    res.json(results);
   });
 });
 
@@ -405,30 +435,30 @@ app.get('/api/procesos/:casonumero', (req, res) => {
     `;
     
     conexion.query(sql, [casonumero], (err, results) => {
-        if (err) {
-            console.error('Error en la consulta:', err);
-            return res.status(500).json({ error: 'Error en el servidor' });
-        }
-        
-        if (results.length === 0) {
-            return res.status(404).json({ error: 'Caso no encontrado' });
-        }
-        
-        const response = {
-            casonumero: results[0].casonumero,
-            nombre: results[0].nombre || 'No especificado',
-            apellido: results[0].apellido || 'No especificado',
-            casos: results.map(row => ({
-                casonumero: row.casonumero,
-                tipo: row.tipo_caso || 'No especificado',
-                fecha_creacion: row.fecha_creacion || 'No especificada',
-                fecha_actualizacion: row.fecha_actualizacion || 'No actualizado',
-                estado: row.estado || 'No especificado',
-                observaciones: row.observaciones || ''
-            }))
-        };
-        
-        res.json(response);
+      if (err) {
+        console.error("Error en la consulta:", err);
+        return res.status(500).json({ error: "Error en el servidor" });
+      }
+
+      if (results.length === 0) {
+        return res.status(404).json({ error: "Caso no encontrado" });
+      }
+
+      const response = {
+        casonumero: results[0].casonumero,
+        nombre: results[0].nombre || "No especificado",
+        apellido: results[0].apellido || "No especificado",
+        casos: results.map((row) => ({
+          casonumero: row.casonumero,
+          tipo: row.tipo_caso || "No especificado",
+          fecha_creacion: row.fecha_creacion || "No especificada",
+          fecha_actualizacion: row.fecha_actualizacion || "No actualizado",
+          estado: row.estado || "No especificado",
+          observaciones: row.observaciones || "",
+        })),
+      };
+
+      res.json(response);
     });
 });
 
@@ -465,7 +495,7 @@ app.get('/api/procesos/:casonumero/observaciones', (req, res) => {
 });
 
 
-// Ruta para insertar observaciones - Versión corregida
+// Ruta para insertar observaciones
 app.post('/api/procesos/:casonumero/observaciones', async (req, res) => {
     const { casonumero } = req.params;
     const { observacion, id_usuario } = req.body;
@@ -542,7 +572,7 @@ app.post('/actualizar-estado', (req, res) => {
   if (!estadosPermitidos.includes(estado)) {
     return res.status(400).json({ 
       success: false,
-      error: 'Estado no válido. Los permitidos son: Pendiente, En trámite, Tramitado'
+      error: 'Estado no válido. Los permitidos son: Abierto, En trámite, Tramitado'
     });
   }
 
@@ -557,7 +587,7 @@ app.post('/actualizar-estado', (req, res) => {
       });
     }
 
-    // 2. Registrar observación automática (opcional)
+    // 2. Registrar observación automática 
     const observacion = `Estado actualizado a: ${estado}`;
     const sqlObs = 'INSERT INTO observaciones (proceso_id, usuario_id, texto) VALUES ((SELECT id FROM procesos WHERE casonumero = ?), ?, ?)';
     
@@ -696,6 +726,85 @@ app.post('/procesos', (req, res) => {
 
 
 module.exports = router;
+
+
+
+// Ruta para vista EJS que consume tu API JSON
+app.get('/detalle-caso/:casonumero', async (req, res) => {
+    try {
+        const response = await axios.get(`http://localhost:${port}/api/procesos/${req.params.casonumero}`);
+        const data = response.data;
+
+        if (data.error) {
+            return res.render('error', { message: data.error });
+        }
+
+        // Transforma los datos de la API al formato que espera tu EJS
+        res.render('detalle-caso', {
+            caso: {
+                numero: data.casonumero,
+                nombre: data.nombre,
+                apellido: data.apellido,
+                tipo: data.casos[0].tipo,
+                estado: data.casos[0].estado,
+                fecha_creacion: data.casos[0].fecha_creacion,
+                observaciones: data.casos[0].observaciones
+            }
+        });
+    } catch (error) {
+        console.error("Error al obtener datos del caso:", error);
+        res.render('error', { message: "Error al cargar el caso" });
+    }
+});
+  
+//upload de archivos
+
+
+// Ruta para subir documentos
+app.post('/api/procesos/:numerocaso/documentos', upload.single("adjuntos"), (req, res) => {
+  const nombre = req.body.nombre;
+  const numerocaso = req.params.numerocaso; // Ahora se obtiene de los parámetros de la URL
+  const archivo = req.file;
+
+  if (!archivo) {
+      return res.status(400).send("No se subió ningún archivo.");
+  }
+
+  const nombreArchivo = archivo.filename;
+  const rutaArchivo = archivo.path;
+
+  const query = `
+      INSERT INTO documentos (nombre, archivo, ruta, id_proceso)
+      VALUES (?, ?, ?, ?)
+  `;
+
+  conexion.query(
+      query,
+      [nombre, nombreArchivo, rutaArchivo, numerocaso],
+      (err, result) => {
+          if (err) {
+              console.error("Error al insertar en la base de datos:", err);
+              return res.status(500).send("Error al guardar en la base de datos.");
+          }
+
+          console.log("📄 Documento subido y guardado:", {
+              nombre,
+              nombreArchivo,
+              rutaArchivo,
+              numerocaso,
+          });
+
+          res.send("✅ Documento subido y guardado correctamente.");
+      }
+  );
+});
+
+
+
+
+
+
+
 
 app.listen(3000, () => {
   console.log('Servidor corriendo en http://localhost:3000');

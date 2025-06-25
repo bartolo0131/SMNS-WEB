@@ -1,23 +1,15 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- ... otros meta tags ... -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Caso</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="../css/detallecaso.css">
 </head>
 <body>
-    <%-include ('partials/navegationroles') %>
 
-  <div class="submenu">
-    <ul>
-        <li><a href="#" id="link-casos" class="active"><i class="fas fa-folder-open"></i> Casos
-        <li><a href="/citas"><i class="fas fa-calendar-alt"></i> Citas Pendientes</a></li>
-        <li><a href="/cuenta"><i class="fas fa-user-cog"></i>Costos</a></li>
-        <li><a href="/reportes"><i class="fas fa-chart-bar"></i> Reportes</a></li>
-        <li><a href="/configuracion"><i class="fas fa-cog"></i> Configuración</a></li>
-    </ul>
-</div>
-    
+    <%-include ('partials/navegationroles')%>
     <div class="contenedor-detalle">
         <h2>Detalle de Caso</h2>
         
@@ -37,6 +29,24 @@
             <div id="estado-actual" style="margin-top: 10px;"></div>
         </div>
         
+        <!-- Sección de documentos (solo formulario de subida) -->
+        <div class="documentos-container">
+            <h3>Subir Documento</h3>
+            <form id="formDocumento" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="form_label" for="nombre">Nombre del documento</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Ej. Contrato firmado" required />
+                    
+                    <label class="form_label" for="adjuntos">Archivo</label>
+                    <input type="file" name="adjuntos" id="adjuntos" required />
+                    
+                    <button type="submit" class="btn-enviar">
+                        <i class="fas fa-upload"></i> Subir documento
+                    </button>
+                </div>
+            </form>
+        </div>
+        
         <div class="seccion-observaciones">
             <h3>Observaciones del Caso</h3>
             <div id="observaciones-lista" class="observaciones-lista">
@@ -47,12 +57,16 @@
                 <h4>Agregar nueva observación</h4>
                 <form id="form-nueva-observacion">
                     <textarea id="nueva-observacion" placeholder="Escribe tu observación aquí..." required></textarea>
-                    <button type="submit" class="btn-enviar">Enviar Observación</button>
+                    <button type="submit" class="btn-enviar">
+                        <i class="fas fa-paper-plane"></i> Enviar Observación
+                    </button>
                 </form>
             </div>
         </div>
         
-        <button onclick="window.history.back()" class="btn-volver">Volver</button>
+        <button onclick="window.history.back()" class="btn-volver">
+            <i class="fas fa-arrow-left"></i> Volver
+        </button>
     </div>
 
     

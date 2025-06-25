@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subir Documentos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/detallecaso.css">
+</head>
+<body>
+    <%- include('partials/navegationroles') %>
+
+    <div class="submenu">
+        <ul>
+            <li><a href="/detalle-caso" id="link-casos" class="active"><i class="fas fa-folder-open"></i> Casos</a></li>
+            <li><a href="/citas"><i class="fas fa-calendar-alt"></i> Citas Pendientes</a></li>
+            <li><a href="/cuenta"><i class="fas fa-user-cog"></i>Costos</a></li>
+            <li><a href="/documentos"><i class="fas fa-chart-bar"></i> Documentos</a></li>
+            <li><a href="/configuracion"><i class="fas fa-cog"></i> Configuración</a></li>
+        </ul>
+    </div>
+
+    <form class="form" id="formDocumento" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label class="form_label" for="nombre">Subir documento</label>
+            <input type="text" id="nombre" name="nombre" placeholder="Nombre del documento" required />
+            <input type="file" name="adjuntos" id="adjuntos" required />
+            
+            <button type="submit">Subir documento</button>
+        </div>
+    </form>
+    
+    <div>
+        <button onclick="window.history.back()" class="btn-volver">Volver</button>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 DG Consulting Services. Todos los derechos reservados</p>
+    </footer>
+
+    <script>
+        document.getElementById('formDocumento').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Obtener el número de caso de la URL actual
+            const urlParams = new URLSearchParams(window.location.search);
+            const numerocaso = urlParams.get('caso');
+            
+            // Si no está en los parámetros, podrías obtenerlo de otra manera
+            // Por ejemplo, si está en la ruta: /detalle-caso/123
+            // const numerocaso = window.location.pathname.split('/').pop();
+            
+    
+            const formData = new FormData(this);
+            
+            fetch(`/api/procesos/${numerocaso}/documentos`, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data); // Muestra el mensaje de éxito
+                // Opcional: recargar la lista de documentos
+                window.location.reload();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al subir el documento');
+            });
+        });
+    </script>
+</body>
+</html>
