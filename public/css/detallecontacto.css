@@ -135,12 +135,13 @@ p[detalle] {
 }
 
 /* Footer siempre al final */
- footer {
-    flex-shrink: 0;
-    background-color: #555;
-    color: rgb(244, 234, 234);
+footer {
     text-align: center;
-    padding: 15px 0;
+    padding: 20px;
+    margin-top: 20px;
+    background-color: #343a40;
+    color: white;
+    position: fixed;
+    Bottom: 0;
     width: 100%;
-}
         

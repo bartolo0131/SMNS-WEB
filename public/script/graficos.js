@@ -1,33 +1,124 @@
 document.addEventListener("DOMContentLoaded", function () {
-  fetch(`/api/graficos`)
-    .then((response) => response.json())
+  const loadingElement = document.getElementById("loading");
+  const errorContainer = document.getElementById("errorContainer");
+  const chartsContainer = document.getElementById("chartsContainer");
+
+  // Colores consistentes para los estados
+  const estadoColors = {
+    Abierto: "#36A2EB",
+    Cerrado: "#FF6384",
+    "En progreso": "#FFCE56",
+    Pendiente: "#4BC0C0",
+    Resuelto: "#9966FF",
+    Rechazado: "#FF9F40",
+  };
+
+  // Función para obtener color según el estado
+  function getColorForEstado(estado) {
+    return (
+      estadoColors[estado] ||
+      `#${Math.floor(Math.random() * 16777215).toString(16)}`
+    );
+  }
+
+  fetch("/api/datos")
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Error ${response.status}: ${response.statusText}`);
+      }
+      return response.json();
+    })
     .then((data) => {
-      console.log(data); // ✅ Esto es el arreglo
+      console.log("Datos recibidos:", data);
 
-      const graficoContainer = document.getElementById("grafico_container");
+      // Ocultar loading y mostrar gráficas
+      loadingElement.style.display = "none";
+      errorContainer.style.display = "none";
+      chartsContainer.style.display = "flex";
 
-      if (data.error) {
-        graficoContainer.innerHTML = `<p class="error">${data.error}</p>`;
-      } else {
-        data.forEach((cuenta) => {
-            if (cuenta.estado != null) {
-                const estado = cuenta.estado;
-                const grafico = document.createElement("div");
-                grafico.innerHTML = `
-                    <h3>${cuenta.Tipo_caso}</h3>
-                    <p>Estado: ${estado}</p>
-                    <div class="grafico-barra" style="width: ${
-                      estado * 10
-                    }%; background-color:rgb(46, 26, 159); height: 20px; margin-bottom: 10px;"></div>
-                  `;
-                graficoContainer.appendChild(grafico);
-            }
+      // Preparar colores consistentes para gráfica de barras
+      if (data.barData.datasets) {
+        data.barData.datasets.forEach((dataset) => {
+          dataset.backgroundColor = getColorForEstado(dataset.label);
+          dataset.borderColor = dataset.backgroundColor;
+          dataset.borderWidth = 1;
         });
       }
+
+      // Gráfica de Barras
+      new Chart(document.getElementById("barChart"), {
+        type: "bar",
+        data: data.barData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: "top",
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  return `${context.dataset.label}: ${context.raw}`;
+                },
+              },
+            },
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              title: {
+                display: true,
+                text: "Cantidad de Casos",
+              },
+            },
+            x: {
+              title: {
+                display: true,
+                text: "Tipos de Casos",
+              },
+            },
+          },
+        },
+      });
+
+      // Gráfica de Torta
+      new Chart(document.getElementById("pieChart"), {
+        type: "pie",
+        data: data.pieData,
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: "right",
+            },
+            tooltip: {
+              callbacks: {
+                label: function (context) {
+                  const label = context.label || "";
+                  const value = context.raw || 0;
+                  const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                  const percentage = Math.round((value / total) * 100);
+                  return `${label}: ${value} (${percentage}%)`;
+                },
+              },
+            },
+            title: {
+              display: false,
+            },
+          },
+        },
+      });
     })
     .catch((error) => {
       console.error("Error:", error);
-      document.getElementById("grafico_container").innerHTML =
-        '<p class="error">Error al cargar los procesos</p>';
+      loadingElement.style.display = "none";
+      errorContainer.style.display = "block";
+      errorContainer.innerHTML = `
+        <h3>Error al cargar los datos</h3>
+        <p>${error.message}</p>
+        <p>Por favor intente nuevamente más tarde.</p>
+      `;
     });
 });

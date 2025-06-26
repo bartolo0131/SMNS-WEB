@@ -1,38 +1,40 @@
-html, body {
-    margin: 0;
-    padding: 0;
-    min-height: 100vh;
-}
+
 
 body {
-    display: flex;
-    flex-direction: column;
-    background-image: url('https://images.pexels.com/photos/4497200/pexels-photo-4497200.jpeg');
-    background-size: cover;
-    background-position: center;
-    background-repeat: no-repeat;
-    font-family: Arial, sans-serif;
+  display: flex;
+  flex-direction: column;
+  background-image: url('https://images.pexels.com/photos/4497200/pexels-photo-4497200.jpeg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
 }
 
-
-
-
-/* Tamaño grande del texto Experts in migration consulting Your Service */
-.hero{
-    font-size: 100rem; /* Tamaño grande del texto del párrafo */
-    font-style: initial; /* Estilo en cursiva */
-    justify-content: center;
-    text-align: center;
-
-    
-
+/* Hero Section mejorada */
+.hero {
+  font-size: 3.5rem;
+  font-weight: bold;
+  font-style: italic;
+  text-align: center;
+  margin: 2rem auto;
+  padding: 1rem;
+  color: #ffffff;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+  max-width: 80%;
 }
+
+h2 {
+  font-size: 2.5rem;
+  color: #3e0bf7;
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
 h3 {
-  font-size:xx-large;
+  font-size: 2rem; 
   color: #38344d;
-  font-size: 3rem; 
+  margin: 1rem 0;
 }
-
 
 header .container,
 footer .container {
@@ -43,45 +45,29 @@ footer .container {
 }
 
 main {
+  flex: 3;
   max-width: 1000px;
-  margin: 10px auto;
-  padding: 20px;
-  background-color: rgb(174, 165, 165);
+  margin: 40px auto;
+  padding: 40px;
+  background-color: rgba(174, 165, 165, 0.9);
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 15px rgba(0,0,0,0.2);
 }
 
 li {
-    font-size: 18px;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-     color: #261f3e;
+  font-size: 1.1rem;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  color: #261f3e;
+  margin-bottom: 1.5rem;
 }
 
-
-
-
-
-/* Estilos para el pie de página */
 footer {
-    background-color: rgba(0, 0, 0, 0.7);
-    color: rgb(126, 118, 118);
-    text-align: center;
-    padding: 10px 20px;
-    margin-top: auto;  
+  text-align: center;
+  padding: 20px;
+  margin-top: 20px;
+  background-color: #343a40;
+  color: white;
+  position: fixed;
+  Bottom: 0;
+  width: 100%;
 }
-p {
-    font-size: 18px;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
-     color: #261f3e;
-}
-
-h2 {
-    font-size:xx-large;
-    color: #3e0bf7;
-}
-
-
-
-
-
-

@@ -126,12 +126,14 @@ nav ul li a {
 
 estilo pied de pagina
 footer {
-    background-color: rgba(0, 0, 0, 0.7);
-    color: rgb(126, 118, 118);
-    text-align: center;
-    padding: 10px 20px;
-    margin-top: auto;  
-}
+  text-align: center;
+  padding: 20px;
+  margin-top: 20px;
+  background-color: #343a40;
+  color: white;
+  position: fixed;
+  Bottom: 0;
+  width: 100%;
 p {
     font-size: 20px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;

@@ -383,7 +383,9 @@ router.post(
   }
 );
 
-
+// =============================================
+// API de graficos y estadísticas
+// =============================================
 
 
 router.get("/datos", async (req, res) => {
@@ -406,26 +408,43 @@ router.get("/datos", async (req, res) => {
 
     if (!results || results.length === 0) {
       return res.status(200).json({
-        labels: ["No hay datos"],
-        datasets: [
-          {
-            label: "Sin registros",
-            data: [1],
-            backgroundColor: "rgba(200, 200, 200, 0.5)",
-          },
-        ],
+        barData: {
+          labels: ["No hay datos"],
+          datasets: [
+            {
+              label: "Sin registros",
+              data: [1],
+              backgroundColor: "rgba(200, 200, 200, 0.5)",
+            },
+          ],
+        },
+        pieData: {
+          labels: ["No hay datos"],
+          datasets: [
+            {
+              data: [1],
+              backgroundColor: ["rgba(200, 200, 200, 0.5)"],
+            },
+          ],
+        },
       });
     }
 
+    // Procesamiento para gráfica de barras
     const labels = [];
     const datasetsMap = new Map();
 
+    // Procesamiento adicional para gráfica de torta
+    const estadoTotales = new Map(); // {estado: total}
+
     results.forEach((item) => {
+      // Para gráfica de barras
       if (item.tipo_caso && !labels.includes(item.tipo_caso)) {
         labels.push(item.tipo_caso);
       }
 
       if (item.estado) {
+        // Datos para barras
         if (!datasetsMap.has(item.estado)) {
           datasetsMap.set(item.estado, {
             label: item.estado,
@@ -437,25 +456,59 @@ router.get("/datos", async (req, res) => {
             )}, 0.5)`,
           });
         }
-
         const index = labels.indexOf(item.tipo_caso);
         if (index !== -1) {
           datasetsMap.get(item.estado).data[index] = item.cantidad;
         }
+
+        // Acumular totales por estado para la torta
+        const totalActual = estadoTotales.get(item.estado) || 0;
+        estadoTotales.set(item.estado, totalActual + item.cantidad);
       }
     });
 
+    // Preparar datos para la torta
+    const pieLabels = Array.from(estadoTotales.keys());
+    const pieData = Array.from(estadoTotales.values());
+    const backgroundColors = [
+      "#FF6384",
+      "#36A2EB",
+      "#FFCE56",
+      "#4BC0C0",
+      "#9966FF",
+      "#FF9F40",
+      "#8AC24A",
+      "#EA3546",
+      "#2E86AB",
+      "#F18F01",
+      "#C73E1D",
+      "#3CBBB1",
+    ];
+
     res.json({
-      labels: labels.length ? labels : ["No hay tipos"],
-      datasets: datasetsMap.size
-        ? Array.from(datasetsMap.values())
-        : [
-            {
-              label: "Sin estados",
-              data: labels.map(() => 0),
-              backgroundColor: "rgba(200, 200, 200, 0.5)",
-            },
-          ],
+      barData: {
+        labels: labels.length ? labels : ["No hay tipos"],
+        datasets: datasetsMap.size
+          ? Array.from(datasetsMap.values())
+          : [
+              {
+                label: "Sin estados",
+                data: labels.map(() => 0),
+                backgroundColor: "rgba(200, 200, 200, 0.5)",
+              },
+            ],
+      },
+      pieData: {
+        labels: pieLabels,
+        datasets: [
+          {
+            data: pieData,
+            backgroundColor: pieLabels.map(
+              (_, i) => backgroundColors[i % backgroundColors.length]
+            ),
+          },
+        ],
+      },
     });
   } catch (error) {
     console.error("Error en /api/datos:", error);
@@ -465,5 +518,12 @@ router.get("/datos", async (req, res) => {
     });
   }
 });
+
+// =============================================
+// Rutas de autenticación
+// =============================================
+
+
+
 
 module.exports = router;

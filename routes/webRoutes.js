@@ -26,8 +26,7 @@ router.get("/costos", (req, res) => res.render("costos"));
 router.get("/procesos", caseController.showProcessForm);
 
 // Rutas con lógica
-router.post("/login", authController.login);
-router.post("/logout", authController.logout);
+
 router.post("/contactar", contactController.submitContact);
 router.post("/validar", contactController.registerUser);
 router.post("/procesos", caseController.createProcess);

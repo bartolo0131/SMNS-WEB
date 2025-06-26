@@ -17,7 +17,7 @@
 
     <section id="login">
       <div class="login-container">
-        <form class="login-form" id="loginForm" form action="/login" method="POST" > 
+        <form class="login-form" id="loginForm" form action="/login" method="POST"enctype="application/x-www-form-urlencoded" > 
           <h2>Welcome Back</h2>
 
               <div class="input-group">
@@ -54,13 +54,24 @@
             text: '<%= alertMessage %>',
             icon: '<%= alertIcon %>',
             showConfirmButton: <%= showconfirmButton %>,
-            timer: <%= time %>
+  
           }).then(() => {
             window.location = "<%= ruta %>";
           });
         </script>
         <% } %>
-
+        <script>
+          fetch("/login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              login: "usuario",
+              password: "clave123",
+            }),
+          });
+        </script>
     
   </body>
 </html>
