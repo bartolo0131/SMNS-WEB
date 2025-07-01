@@ -1,128 +1,517 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Registro de Usuarios</title>
-  <link rel="stylesheet" href="../css/registro.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .required-field::after {
+      content: " *";
+      color: red;
+    }
+    .error-message {
+      color: red;
+      font-size: 0.8em;
+      display: none;
+      margin-top: 5px;
+    }
+    .is-invalid {
+      border-color: red !important;
+    }
+    .password-strength {
+      height: 5px;
+      margin-top: 5px;
+      background-color: #eee;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+    .strength-meter {
+      height: 100%;
+      width: 0;
+      transition: width 0.3s;
+    }
+    .mensaje-flotante {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px;
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+      border-radius: 5px;
+      z-index: 1000;
+    }
+    .cerrar {
+      float: right;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .spinner-border {
+      display: none;
+      width: 1.5rem;
+      height: 1.5rem;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+    .form-control {
+      border-color: #ced4da;
+    }
+    .form-control:focus {
+      border-color: #86b7fe;
+      box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
 
-
+    /* Footer siempre al final */
+footer {
+  text-align: center;
+  padding: 20px;
+  margin-top: 20px;
+  background-color: #343a40;
+  color: white;
+  position: fixed;
+  Bottom: 0;
+  width: 100%;
+  </style>
 </head>
 <body>
- <%-include ('partials/footer')%>
+  <%-include ('partials/footer')%>
+  <div class="container mt-5">
+    <h2>Create an account</h2>
 
-  <h2>Create an account</h2>
+    <div class="form-container" style="position: relative;">
+      <form action="/validar" method="post" id="formRegistro" novalidate>
 
-  <div class="form-container" style="position: relative;">
-    <form action="/validar" method="post" id="formRegistro">
+        <div class="row">
+          <div class="col-md-3">
+            <div class="mb-4">
+              <label for="Nombre" class="form-label required-field">Name</label>
+              <input type="text" class="form-control" id="Nombre" name="nombre" 
+                     placeholder="Enter username" required
+                     onblur="validateField('Nombre')">
+              <div class="error-message" id="Nombre-error">This field is required</div>
+            </div>
+          </div>
 
-      <div class="row">
-        <div class="col-3">
-          <div class="mb-4">
-            <label for="Nombre" class="form-label">Name</label>
-            <input type="text" class="form-control" id="Nombre" name="nombre" placeholder="Enter username">
+          <div class="col-md-3">
+            <div class="mb-4">
+              <label for="Apellido" class="form-label required-field">Last name</label>
+              <input type="text" class="form-control" id="Apellido" name="apellido" 
+                     placeholder="Enter user last name" required
+                     onblur="validateField('Apellido')">
+              <div class="error-message" id="Apellido-error">This field is required</div>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="mb-4">
+              <label for="genero" class="form-label required-field">Indicate your gender</label>
+              <select class="form-select" id="genero" name="genero" required
+                      onblur="validateField('genero')">
+                <option selected value="">Open this select menu</option>
+                <option value="Male">Male</option>
+                <option value="Feminine">Feminine</option>
+                <option value="Other">Other</option>
+              </select>
+              <div class="error-message" id="genero-error">Please select a gender</div>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="mb-4">
+              <label for="identificacion" class="form-label required-field">Document type</label>
+              <select class="form-select" id="identificacion" name="identificacion" required
+                      onblur="validateField('identificacion')">
+                <option selected value="">Open this select menu</option>
+                <option value="cedula">ID</option>
+                <option value="pasaporte">Passport</option>
+                <option value="DNI">DNI</option>
+              </select>
+              <div class="error-message" id="identificacion-error">Please select a document type</div>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="mb-4">
+              <label for="documento" class="form-label required-field">Document number</label>
+              <input type="text" class="form-control" id="documento" name="documento" 
+                     placeholder="Enter document number" required
+                     onblur="validateDocumento()">
+              <div class="error-message" id="documento-error">This field is required</div>
+              <div class="error-message" id="documento-exists-error">
+                This document number is already registered
+                <span class="spinner-border spinner-border-sm" id="documento-spinner"></span>
+              </div>
+            </div>
+          </div>   
+
+          <div class="col-md-3">
+            <div class="mb-4">
+              <label for="fechanacimiento" class="form-label required-field">Date of birth</label>
+              <input type="date" class="form-control" id="fechanacimiento" name="fechanacimiento" 
+                     required onblur="validateField('fechanacimiento')">
+              <div class="error-message" id="fechanacimiento-error">Please select your birth date</div>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="mb-4">
+              <label for="email" class="form-label required-field">Email address</label>
+              <input type="email" class="form-control" id="email" name="email" 
+                     placeholder="Enter your email address" required
+                     onblur="validateEmail()">
+              <div class="error-message" id="email-error">Please enter a valid email</div>
+              <div class="error-message" id="email-exists-error">
+                This email is already registered
+                <span class="spinner-border spinner-border-sm" id="email-spinner"></span>
+              </div>
+            </div>
+          </div>         
+
+          <div class="col-md-3">
+            <div class="mb-4">
+              <label for="Telefono" class="form-label">Contact number</label>
+              <input type="text" class="form-control" id="Telefono" name="Telefono" 
+                     placeholder="Enter user phone number">
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="mb-4">
+              <label for="password" class="form-label required-field">Password</label>
+              <input type="password" class="form-control" id="password" name="password" 
+                     required oninput="checkPasswordStrength()" onblur="validatePassword()">
+              <div class="password-strength">
+                <div class="strength-meter" id="passwordStrength"></div>
+              </div>
+              <div class="error-message" id="password-error">Password must be at least 8 characters</div>
+              <small class="form-text text-muted">Use at least 8 characters with a mix of letters, numbers and symbols</small>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <div class="mb-4">
+              <label for="confirmPassword" class="form-label required-field">Confirm Password</label>
+              <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" 
+                     required onblur="validatePasswordMatch()">
+              <div class="error-message" id="confirmPassword-error">Passwords don't match</div>
+            </div>
+          </div>
+
+          <div class="col-md-12">
+            <div class="mb-4">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="terms" name="terms" required
+                       onchange="validateSubmitButton()">
+                <label class="form-check-label required-field" for="terms">
+                  I agree to the Terms and Conditions
+                </label>
+                <div class="error-message" id="terms-error">You must accept the terms</div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div class="col-3">
-          <div class="mb-4">
-            <label for="Apellido" class="form-label">Last name</label>
-            <input type="text" class="form-control" id="Apellido" name="apellido" placeholder="Enter user last name">
+        <div class="row">
+          <div class="col-md-12">
+            <button type="submit" class="btn btn-success me-2" id="submitBtn">Register</button>   
+            <button type="reset" class="btn btn-info" onclick="resetForm()">Clean</button>
           </div>
         </div>
+      </form>
 
-        <div class="col-3">
-          <div class="mb-4">
-            <label for="genero" class="form-label"> Indicate your gender</label>
-            <select class="form-select" id="genero" name="genero">
-              <option selected value="">Open this select menu</option>
-              <option value="Male">Male</option>
-              <option value="Feminine">Feminine</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
+      <% if (typeof mensaje !== 'undefined') { %>
+        <div id="mensajeFlotante" class="mensaje-flotante">
+          <span id="cerrarMensaje" class="cerrar">&times;</span>
+          <p><%= mensaje %></p>
         </div>
-
-        <div class="col-3">
-          <div class="mb-4">
-            <label for="identificacion" class="form-label"> Indicate your gender</label>
-            <select class="form-select" id="identificacion" name="identificacion">
-              <option selected value="">Open this select menu</option>
-              <option value="cedula">ID</option>
-              <option value="pasaporte">Passport</option>
-              <option value="DNI">DNI</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="col-3">
-          <div class="mb-4">
-            <label for="documento" class="form-label">Document number</label>
-            <input type="text" class="form-control" id="documento" name="documento" placeholder="Enter document number">
-          </div>
-        </div>   
-
-        <div class="col-3">
-          <div class="mb-4">
-            <label for="fechanacimiento" class="form-label">Date of birth</label>
-            <input type="date" class="form-control" id="fechanacimiento" name="fechanacimiento"> 
-          </div>
-        </div>
-
-        <div class="col-3">
-          <div class="mb-4">
-            <label for="email" class="form-label">email address</label>
-            <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address">
-          </div>
-        </div>         
-
-        <div class="col-3">
-          <div class="mb-4">
-            <label for="Telefono" class="form-label">Contact number</label>
-            <input type="text" class="form-control" id="Telefono" name="Telefono" placeholder="Enter user phone number">
-          </div>
-        </div>  
-      </div>  
-
-      <div class="row">
-        <div class="col-12">
-          <button type="submit" class="btn btn-success">Register</button>   
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-12">
-          <button type="reset" class="btn btn-info">Clean</button>
-        </div>
-      </div>
-
-    </form>
-
-    <% if (typeof mensaje !== 'undefined') { %>
-      <div id="mensajeFlotante" class="mensaje-flotante">
-        <span id="cerrarMensaje" class="cerrar">&times;</span>
-        <p><%= mensaje %></p>
-      </div>
-    <% } %>
-
+      <% } %>
+    </div>
   </div>
 
-  <footer>
-    
-      <p>&copy; 2024 DG Consulting Services. All rights reserved.</p>
-    </div>
+  <footer class="mt-5">
+    <p class="text-center">&copy; 2024 DG Consulting Services. All rights reserved.</p>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
   <script>
-    const mensajeFlotante = document.getElementById('mensajeFlotante');
-    const cerrarMensaje = document.getElementById('cerrarMensaje');
+    // Variables para controlar si el usuario/documento existen
+    let userExists = false;
+    let documentExists = false;
 
-    if(cerrarMensaje){
-      cerrarMensaje.onclick = function(){
-        mensajeFlotante.style.display = 'none';
+    // Validar campo genérico
+    function validateField(fieldId) {
+      const field = document.getElementById(fieldId);
+      const errorElement = document.getElementById(`${fieldId}-error`);
+      
+      if (!field.value) {
+        field.classList.add('is-invalid');
+        errorElement.style.display = 'block';
+      } else {
+        field.classList.remove('is-invalid');
+        errorElement.style.display = 'none';
+      }
+      
+      validateSubmitButton();
+    }
+
+    // Validar email
+    function validateEmail() {
+      const emailField = document.getElementById('email');
+      const emailError = document.getElementById('email-error');
+      const emailExistsError = document.getElementById('email-exists-error');
+      
+      // Resetear estados
+      emailField.classList.remove('is-invalid');
+      emailError.style.display = 'none';
+      emailExistsError.style.display = 'none';
+      userExists = false;
+
+      // Validar si el campo está vacío
+      if (!emailField.value) {
+        emailField.classList.add('is-invalid');
+        emailError.style.display = 'block';
+        validateSubmitButton();
+        return;
+      }
+
+      // Validar formato de email
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailField.value)) {
+        emailField.classList.add('is-invalid');
+        emailError.textContent = 'Please enter a valid email address';
+        emailError.style.display = 'block';
+        validateSubmitButton();
+        return;
+      }
+
+      // Si pasa validación básica, verificar si existe
+      checkUserExists();
+    }
+
+    // Validar documento
+    function validateDocumento() {
+      const docField = document.getElementById('documento');
+      const docError = document.getElementById('documento-error');
+      const docExistsError = document.getElementById('documento-exists-error');
+      
+      // Resetear estados
+      docField.classList.remove('is-invalid');
+      docError.style.display = 'none';
+      docExistsError.style.display = 'none';
+      documentExists = false;
+
+      // Validar si el campo está vacío
+      if (!docField.value) {
+        docField.classList.add('is-invalid');
+        docError.style.display = 'block';
+        validateSubmitButton();
+        return;
+      }
+
+      // Si pasa validación básica, verificar si existe
+      checkDocumentExists();
+    }
+
+    // Validar contraseña
+    function validatePassword() {
+      const passwordField = document.getElementById('password');
+      const passwordError = document.getElementById('password-error');
+      
+      if (passwordField.value.length < 8) {
+        passwordField.classList.add('is-invalid');
+        passwordError.style.display = 'block';
+      } else {
+        passwordField.classList.remove('is-invalid');
+        passwordError.style.display = 'none';
+      }
+      
+      validatePasswordMatch();
+      validateSubmitButton();
+    }
+
+    // Validar coincidencia de contraseñas
+    function validatePasswordMatch() {
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const confirmField = document.getElementById('confirmPassword');
+      const errorElement = document.getElementById('confirmPassword-error');
+      
+      if (password && confirmPassword && password !== confirmPassword) {
+        confirmField.classList.add('is-invalid');
+        errorElement.style.display = 'block';
+        return false;
+      } else {
+        confirmField.classList.remove('is-invalid');
+        errorElement.style.display = 'none';
+        return true;
       }
     }
-  </script>
 
+    // Verificar si el usuario ya existe (por email)
+    function checkUserExists() {
+      const email = document.getElementById('email').value;
+      const spinner = document.getElementById('email-spinner');
+      const existsError = document.getElementById('email-exists-error');
+      
+      spinner.style.display = 'inline-block';
+      existsError.style.display = 'none';
+
+      // Simulación de llamada AJAX al servidor
+      setTimeout(() => {
+        spinner.style.display = 'none';
+        
+        // Esto es solo para demostración - en producción usarías una llamada real al servidor
+        const fakeExistingEmails = ['existente@example.com', 'usuario@registrado.com'];
+        if (fakeExistingEmails.includes(email)) {
+          userExists = true;
+          existsError.style.display = 'block';
+          document.getElementById('email').classList.add('is-invalid');
+        } else {
+          userExists = false;
+          existsError.style.display = 'none';
+        }
+        validateSubmitButton();
+      }, 1000);
+    }
+
+    // Verificar si el documento ya existe
+    function checkDocumentExists() {
+      const docNumber = document.getElementById('documento').value;
+      const spinner = document.getElementById('documento-spinner');
+      const existsError = document.getElementById('documento-exists-error');
+      
+      spinner.style.display = 'inline-block';
+      existsError.style.display = 'none';
+
+      // Simulación de llamada AJAX al servidor
+      setTimeout(() => {
+        spinner.style.display = 'none';
+        
+        // Esto es solo para demostración - en producción usarías una llamada real al servidor
+        const fakeExistingDocs = ['12345678', '87654321'];
+        if (fakeExistingDocs.includes(docNumber)) {
+          documentExists = true;
+          existsError.style.display = 'block';
+          document.getElementById('documento').classList.add('is-invalid');
+        } else {
+          documentExists = false;
+          existsError.style.display = 'none';
+        }
+        validateSubmitButton();
+      }, 1000);
+    }
+
+    // Verificar fortaleza de contraseña
+    function checkPasswordStrength() {
+      const password = document.getElementById('password').value;
+      const strengthMeter = document.getElementById('passwordStrength');
+      let strength = 0;
+      
+      if (password.length >= 8) strength += 1;
+      if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength += 1;
+      if (password.match(/\d/)) strength += 1;
+      if (password.match(/[^a-zA-Z\d]/)) strength += 1;
+      
+      // Actualizar medidor visual
+      const width = strength * 25;
+      strengthMeter.style.width = `${width}%`;
+      
+      // Cambiar color según fuerza
+      if (strength <= 1) {
+        strengthMeter.style.backgroundColor = 'red';
+      } else if (strength <= 3) {
+        strengthMeter.style.backgroundColor = 'orange';
+      } else {
+        strengthMeter.style.backgroundColor = 'green';
+      }
+    }
+
+    // Validar estado del botón de envío
+    function validateSubmitButton() {
+      let isValid = true;
+      const requiredFields = document.querySelectorAll('[required]');
+      
+      // Verificar campos requeridos
+      requiredFields.forEach(field => {
+        if (!field.value) {
+          isValid = false;
+        }
+        
+        // Caso especial para checkbox
+        if (field.type === 'checkbox' && !field.checked) {
+          isValid = false;
+        }
+      });
+
+      // Verificar errores de validación
+      const invalidFields = document.querySelectorAll('.is-invalid');
+      if (invalidFields.length > 0) {
+        isValid = false;
+      }
+
+      // Verificar si el usuario o documento ya existen
+      if (userExists || documentExists) {
+        isValid = false;
+      }
+
+      document.getElementById('submitBtn').disabled = !isValid;
+    }
+
+    // Resetear el formulario
+    function resetForm() {
+      const fields = document.querySelectorAll('.form-control, .form-select');
+      fields.forEach(field => {
+        field.classList.remove('is-invalid');
+        field.value = '';
+      });
+      
+      // Caso especial para checkbox
+      document.getElementById('terms').checked = false;
+      
+      const errorMessages = document.querySelectorAll('.error-message');
+      errorMessages.forEach(msg => {
+        msg.style.display = 'none';
+      });
+      
+      // Resetear medidor de contraseña
+      document.getElementById('passwordStrength').style.width = '0';
+      
+      userExists = false;
+      documentExists = false;
+      document.getElementById('submitBtn').disabled = true;
+    }
+
+    // Validar el formulario al enviar
+    document.getElementById('formRegistro').addEventListener('submit', function(event) {
+      if (!validateForm()) {
+        event.preventDefault();
+      }
+    });
+
+    function validateForm() {
+      let isValid = true;
+      
+      // Validar todos los campos requeridos
+      const requiredFields = document.querySelectorAll('[required]');
+      requiredFields.forEach(field => {
+        if (!field.value || (field.type === 'checkbox' && !field.checked)) {
+          field.classList.add('is-invalid');
+          const errorElement = document.getElementById(`${field.id}-error`);
+          if (errorElement) errorElement.style.display = 'block';
+          isValid = false;
+        }
+      });
+
+      // Validaciones específicas
+      if (!validatePasswordMatch()) isValid = false;
+      if (userExists || documentExists) isValid = false;
+
+      return isValid;
+    }
+
+    // Inicialización
+    document.addEventListener('DOMContentLoaded', function() {
+      document.getElementById('submitBtn').disabled = true;
+    });
+  </script>
 </body>
 </html>
