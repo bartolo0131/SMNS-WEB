@@ -1,6 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
   const urlParams = new URLSearchParams(window.location.search);
-  let casoId = urlParams.get("id");
+  const casoId = urlParams.get("id");
+  const idUsuario = urlParams.get("id_usuario");
+
+
+  
+
 
   if (!casoId) {
     const pathParts = window.location.pathname.split("/");
@@ -58,11 +63,19 @@ async function subirDocumento(casoId) {
   btnSubmit.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subiendo...';
 
   try {
-    // 1. Subir el documento
+    // 1. Crear formData con los datos del formulario
     const formData = new FormData();
     formData.append("nombre", nombreDocumento);
     formData.append("adjuntos", fileInput.files[0]);
 
+    // Obtener el ID del usuario desde la URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const idUsuario = urlParams.get("id_usuario");
+
+    //  Adjuntar id_usuario al FormData
+    formData.append("id_usuario", idUsuario);
+
+    // 2. Enviar archivo al servidor
     const responseUpload = await fetch(`/api/procesos/${casoId}/documentos`, {
       method: "POST",
       body: formData,
@@ -73,7 +86,7 @@ async function subirDocumento(casoId) {
       throw new Error(errorData.message || "Error al subir el documento");
     }
 
-    // 2. Crear observación automática
+    // 3. Crear observación automática
     const observacion = `Se ha subido el documento: ${nombreDocumento}`;
     const responseObs = await fetch(`/api/procesos/${casoId}/observaciones`, {
       method: "POST",
@@ -87,11 +100,9 @@ async function subirDocumento(casoId) {
       );
     }
 
-    // 3. Actualizar la interfaz
+    // 4. Actualizar la interfaz
     mostrarAlerta("Documento subido correctamente", "success");
     document.getElementById("formDocumento").reset();
-
-    // Recargar observaciones
     cargarObservaciones(casoId);
   } catch (error) {
     console.error("Error:", error);
@@ -101,6 +112,8 @@ async function subirDocumento(casoId) {
     btnSubmit.innerHTML = '<i class="fas fa-upload"></i> Subir documento';
   }
 }
+
+
 
 // Función para cargar detalles del caso
 function cargarDetallesCaso(casoId) {

@@ -7,74 +7,110 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="../css/detallecaso.css">
 </head>
-    <body>
+<body>
 
-        <%-include ('partials/navegationroles')%>
-        <div class="contenedor-detalle">
-            <h2>Detalle de Caso</h2>
-            
-            <div id="detalle-contacto">
-                <p>Cargando información del caso...</p>
-            </div>
-            
-            <!-- Selector de Estado -->
-            <div class="selector-estado" id="selector-estado-container" style="display: none;">
-                <h3>Cambiar Estado del Caso</h3>
-                <select id="selector-estado" class="form-control">
-                    <option value="Pendiente">Pendiente</option>
-                    <option value="En trámite">En trámite</option>
-                    <option value="Tramitado">Tramitado</option>
-                </select>
-                <button id="btn-cambiar-estado" class="btn-enviar" style="margin-top: 10px;">Actualizar Estado</button>
-                <div id="estado-actual" style="margin-top: 10px;"></div>
-            </div>
-            
-            <!-- Sección de documentos (solo formulario de subida) -->
-            <div class="documentos-container">
-                <h3>Subir Documento</h3>
-                <form id="formDocumento" method="post" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label class="form_label" for="nombre">Nombre del documento</label>
-                        <input type="text" id="nombre" name="nombre" placeholder="Ej. Contrato firmado" required />
-                        
-                        <label class="form_label" for="adjuntos">Archivo</label>
-                        <input type="file" name="adjuntos" id="adjuntos" required />
-                        
-                        <button type="submit" class="btn-enviar">
-                            <i class="fas fa-upload"></i> Subir documento
-                        </button>
-                    </div>
-                </form>
-            </div>
-            
-            <div class="seccion-observaciones">
-                <h3>Observaciones del Caso</h3>
-                <div id="observaciones-lista" class="observaciones-lista">
-                    <p>Cargando observaciones...</p>
-                </div>
-                
-                <div class="formulario-comentario">
-                    <h4>Agregar nueva observación</h4>
-                    <form id="form-nueva-observacion">
-                        <textarea id="nueva-observacion" placeholder="Escribe tu observación aquí..." required></textarea>
-                        <button type="submit" class="btn-enviar">
-                            <i class="fas fa-paper-plane"></i> Enviar Observación
-                        </button>
-                    </form>
-                </div>
-            </div>
-            
-            <button onclick="window.history.back()" class="btn-volver">
-                <i class="fas fa-arrow-left"></i> Volver
-            </button>
+    <%- include('partials/navegationroles') %>
+
+    <div class="contenedor-detalle">
+        <h2>Detalle de Caso</h2>
+
+        <div id="detalle-contacto">
+            <p>Cargando información del caso...</p>
         </div>
 
+        <!-- Selector de Estado -->
+        <div class="selector-estado" id="selector-estado-container" style="display: none;">
+            <h3>Cambiar Estado del Caso</h3>
+            <select id="selector-estado" class="form-control">
+                <option value="Pendiente">Pendiente</option>
+                <option value="En trámite">En trámite</option>
+                <option value="Tramitado">Tramitado</option>
+            </select>
+            <button id="btn-cambiar-estado" class="btn-enviar" style="margin-top: 10px;">Actualizar Estado</button>
+            <div id="estado-actual" style="margin-top: 10px;"></div>
+        </div>
+
+        <!-- Sección de documentos (formulario de subida) -->
+        <div class="documentos-container">
+            <h3>Subir Documento</h3>
+            <form id="formDocumento" method="post" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label class="form_label" for="nombre">Nombre del documento</label>
+                    <input type="text" id="nombre" name="nombre" placeholder="Ej. Contrato firmado" required />
+
+                    <label class="form_label" for="adjuntos">Archivo</label>
+                    <input type="file" name="adjuntos" id="adjuntos" required />
+
+                    <button type="submit" class="btn-enviar">
+                        <i class="fas fa-upload"></i> Subir documento
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="documentos-container">
+
+        <h3>Documentos Guardados</h3>
+
+        <% if (documentos && documentos.length > 0) { %>
+            <div class="tabla-documentos">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Fecha de Cargue</th>
+                            <th>Archivo</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% documentos.forEach(doc => { %>
+                            <tr>
+                                <td><%= doc.nombre %></td>
+                                <td><%= doc.fecha_upload %></td>
+                                <td><%= doc.archivo %></td>
+                                <td>
+                                    <a href="/descargar/<%= doc.id %>">Descargar</a>
+                                    <% if (doc.tipo && (doc.tipo.includes('pdf') || doc.tipo.includes('image'))) { %>
+                                        | <a href="/ver/<%= doc.id %>" target="_blank">Ver</a>
+                                    <% } %>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        <% } else { %>
+            <p>No hay documentos subidos para este caso.</p>
+        <% } %>
+        </div>
         
 
-        <footer>
-            <p>&copy; 2024 DG Consulting Services. Todos los derechos reservados</p>
-        </footer>
+        <!-- Observaciones -->
+        <div class="seccion-observaciones">
+            <h3>Observaciones del Caso</h3>
+            <div id="observaciones-lista" class="observaciones-lista">
+                <p>Cargando observaciones...</p>
+            </div>
 
-        <script src="./script/detalle-caso.js"></script>
-    </body>
+            <div class="formulario-comentario">
+                <h3>Agregar nueva observación</h3>
+                <form id="form-nueva-observacion">
+                    <textarea id="nueva-observacion" placeholder="Escribe tu observación aquí..." required></textarea>
+                    <button type="submit" class="btn-enviar">
+                        <i class="fas fa-paper-plane"></i> Enviar Observación
+                    </button>
+                </form>
+            </div>
+        </div>
+
+ <button onclick="window.location.href='/cuentas'" class="btn-volver">Volver al Panel</button>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 DG Consulting Services. Todos los derechos reservados</p>
+    </footer>
+
+    <script src="./script/detalle-caso.js"></script>
+</body>
 </html>

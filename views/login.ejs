@@ -62,15 +62,15 @@
         <% } %>
         <script>
           fetch("/login", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              login: "usuario",
-              password: "clave123",
-            }),
-          });
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    login: "usuario",
+    password: "clave123",
+  }),
+});
         </script>
     
   </body>

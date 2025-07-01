@@ -1,4 +1,6 @@
-/* Estilos generales */
+/* ============================
+   ESTILOS GENERALES
+=============================== */
 body {
     font-family: 'Arial', sans-serif;
     line-height: 1.6;
@@ -12,52 +14,38 @@ body {
     max-width: 1200px;
     margin: 20px auto;
     padding: 20px;
+    background: #ebe1e1;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    border-radius: 5px;
+}
+
+.seccion-observaciones{
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
     background: #fff;
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
     border-radius: 5px;
 }
 
-/* Estilos para el submenú */
-.submenu {
-    background-color: #343a40;
-    padding: 10px 0;
-    margin-bottom: 20px;
-    border-radius: 5px;
+.documento h3 {
+    color: #3498db; /* Azul moderno */
+    /* Mantener las demás propiedades existentes */
+    margin-top: 0;
+    font-size: 1.2em;
+    margin-bottom: 15px;
+    font-weight: 600; /* Opcional: para hacerlo un poco más negrita */
 }
 
-.submenu ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: flex;
-    justify-content: center;
+/* Si quieres que todos los h3 en documentos-container sean azules: */
+.documentos-container h3 {
+    color: #3498db;
 }
 
-.submenu li {
-    margin: 0 15px;
-}
 
-.submenu a {
-    color: white;
-    text-decoration: none;
-    padding: 8px 15px;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-    font-weight: 500;
-}
-
-.submenu a:hover {
-    background-color: #495057;
-}
-
-.submenu a.active {
-    background-color: #007bff;
-}
-
-.submenu a i {
-    margin-right: 8px;
-}
-
+/* ============================
+   MENSAJES, ERRORES Y ALERTAS
+=============================== */
 .error {
     color: #d9534f;
     font-weight: bold;
@@ -68,6 +56,34 @@ body {
     font-style: italic;
 }
 
+.alerta {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 15px 20px;
+    border-radius: 5px;
+    color: white;
+    z-index: 1000;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); }
+    to { transform: translateX(0); }
+}
+
+.alerta.error {
+    background-color: #d9534f;
+}
+
+.alerta.success {
+    background-color: #5cb85c;
+}
+
+/* ============================
+   TABLA DE CASOS GENERALES
+=============================== */
 .contenedor-tabla {
     margin-top: 20px;
     overflow-x: auto;
@@ -81,7 +97,7 @@ body {
 
 .tabla-casos th, .tabla-casos td {
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid #c2bebe;
     text-align: left;
 }
 
@@ -89,21 +105,93 @@ body {
     background-color: #f2f2f2;
 }
 
-.btn-volver {
-    margin-top: 20px;
+
+/* ============================
+   SELECTOR DE ESTADO
+=============================== */
+.selector-estado {
+    margin: 15px 0;
+}
+
+.selector-estado select {
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+}
+
+.badge-estado {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.badge-pendiente {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+.badge-en-tramite {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.badge-tramitado {
+    background-color: #28a745;
+    color: white;
+}
+
+/* ============================
+   SECCIÓN DOCUMENTOS
+=============================== */
+.documentos-container {
+    margin-top: 30px;
+}
+
+.tabla-documentos table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 25px;
+    background-color: #f9f9f9;
+}
+
+.tabla-documentos th,
+.tabla-documentos td {
+    border: 1px solid #969696;
+    padding: 10px;
+    text-align: left;
+}
+
+.tabla-documentos th {
+    background-color: #6a6868;
+    color: #333;
+}
+
+/* ============================
+   BOTÓN ENVIAR GENERAL
+=============================== */
+.btn-enviar {
     padding: 8px 15px;
-    background-color: #6c757d;
+    background-color: #28a745;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
 }
 
-.btn-volver:hover {
-    background-color: #5a6268;
+.btn-enviar:hover {
+    background-color: #218838;
 }
 
-/* Sección de observaciones */
+.btn-enviar:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+/* ============================
+   SECCIÓN OBSERVACIONES
+=============================== */
 .seccion-observaciones {
     margin-top: 30px;
     padding: 20px;
@@ -142,7 +230,6 @@ body {
     color: #007bff;
 }
 
-/* Formulario de comentarios */
 .formulario-comentario {
     margin-top: 20px;
 }
@@ -157,92 +244,48 @@ body {
     resize: vertical;
 }
 
-.btn-enviar {
-    padding: 8px 15px;
-    background-color: #28a745;
+
+/* ============================
+   BOTÓN VOLVER MEJORADO
+=============================== */
+.btn-volver {
+    margin: 30px 0;
+    padding: 10px 20px;
+    background-color: #0d6efd;
     color: white;
     border: none;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 1em;
+    transition: all 0.3s ease;
+    display: inline-block;
 }
 
-.btn-enviar:hover {
-    background-color: #218838;
+.btn-volver:hover {
+    background-color: #0b5ed7;
+    transform: translateY(-2px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
 
-.btn-enviar:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
+.btn-volver i {
+    margin-right: 8px;
 }
 
-/* Footer */
+/* ============================
+   FOOTER MEJORADO
+=============================== */
 footer {
     text-align: center;
     padding: 20px;
-    margin-top: 20px;
     background-color: #343a40;
     color: white;
-    position: fixed;
-    Bottom: 0;
     width: 100%;
+    position: relative; /* Cambiado de fixed a relative */
+    margin-top: 40px;
 }
 
-/* Alertas */
-.alerta {
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 15px 20px;
-    border-radius: 5px;
-    color: white;
-    z-index: 1000;
-    box-shadow: 0 3px 10px rgba(0,0,0,0.2);
-    animation: slideIn 0.3s ease-out;
-}
 
-@keyframes slideIn {
-    from { transform: translateX(100%); }
-    to { transform: translateX(0); }
-}
 
-.alerta.error {
-    background-color: #d9534f;
-}
 
-.alerta.success {
-    background-color: #5cb85c;
-}
 
-/* Selector de estado */
-.selector-estado {
-    margin: 15px 0;
-}
-
-.selector-estado select {
-    padding: 8px 12px;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    font-size: 16px;
-}
-
-.badge-estado {
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 14px;
-    font-weight: bold;
-}
-
-.badge-pendiente {
-    background-color: #ffc107;
-    color: #212529;
-}
-
-.badge-en-tramite {
-    background-color: #17a2b8;
-    color: white;
-}
-
-.badge-tramitado {
-    background-color: #28a745;
-    color: white;
-}
+  

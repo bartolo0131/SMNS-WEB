@@ -342,28 +342,31 @@ router.put("/procesos/:casonumero/estado", async (req, res) => {
 // API de Documentos
 // =============================================
 
+
 router.post(
   "/procesos/:numerocaso/documentos",
   upload.single("adjuntos"),
   (req, res) => {
     const nombre = req.body.nombre;
     const numerocaso = req.params.numerocaso;
+    const idPersona = req.body.id_usuario; 
     const archivo = req.file;
 
     if (!archivo) {
       return res.status(400).send("No se subió ningún archivo.");
     }
 
-    const nombreArchivo = archivo.filename;
-    const rutaArchivo = archivo.path;
+    const nombreOriginal = archivo.originalname;
+    const rutaArchivo = archivo.path.replace(/\\/g, "/"); 
 
     const query = `
-    INSERT INTO documentos (nombre, archivo, ruta, id_proceso)
-    VALUES (?, ?, ?, ?)`;
+        INSERT INTO documentos (nombre, archivo, ruta, id_persona, id_proceso)
+        VALUES (?, ?, ?, ?, ?)
+      `;
 
     conexion.query(
       query,
-      [nombre, nombreArchivo, rutaArchivo, numerocaso],
+      [nombre, nombreOriginal, rutaArchivo, idPersona, numerocaso],
       (err, result) => {
         if (err) {
           console.error("Error al insertar documento:", err);
@@ -372,16 +375,22 @@ router.post(
 
         console.log("Documento subido y guardado:", {
           nombre,
-          nombreArchivo,
-          rutaArchivo,
+          archivo: nombreOriginal,
+          ruta: rutaArchivo,
+          idPersona,
           numerocaso,
         });
 
-        res.send("✅ Documento subido y guardado correctamente.");
+        res.send("Documento subido y guardado correctamente.");
       }
     );
   }
 );
+  
+  
+
+module.exports = router;
+
 
 // =============================================
 // API de graficos y estadísticas
@@ -519,9 +528,6 @@ router.get("/datos", async (req, res) => {
   }
 });
 
-// =============================================
-// Rutas de autenticación
-// =============================================
 
 
 
